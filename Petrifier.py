@@ -19,7 +19,7 @@ class Petrifier:
         print(self.bnet_arrows)
         print(self.petri_nds)
 
-    def write_petrified_bnet_file(self, out_fname):
+    def write_petrified_bnet_file(self, out_fname, red_upstream=True):
         with open(out_fname, "w") as f:
             str0 = "digraph G {\n"
             for ar in self.bnet_arrows:
@@ -31,10 +31,17 @@ class Petrifier:
                 str0 += downstream_nd + "->" + ar[1]
                 str0 += "[style=dotted];\n"
 
-                str0 += ar[1] + "->" + upstream_nd
-                str0 += "[style=dotted];\n"
-                str0 += upstream_nd + "->" + ar[0]
-                str0 += "[style=dotted];\n"
+                if not red_upstream:
+                    str0 += ar[1] + "->" + upstream_nd
+                    str0 += "[style=dotted];\n"
+                    str0 += upstream_nd + "->" + ar[0]
+                    str0 += "[style=dotted];\n"
+                else:
+                    str0 += ar[0] + "->" + upstream_nd
+                    str0 += "[style=dotted, color=red];\n"
+                    str0 += upstream_nd + "->" + ar[1]
+                    str0 += "[style=dotted, color=red];\n"
+
 
                 str0 += ar[0] + "[shape=none];\n"
                 str0 += ar[1] + "[shape=none];\n"
