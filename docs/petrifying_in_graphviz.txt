@@ -1,0 +1,16 @@
+digraph G {
+
+ x->y;
+ x->x2y[style=dashed];
+ x2y->y[style=dashed];
+ y->y2x[style=dashed];
+ y2x->x[style=dashed];
+ x, y[shape=none];
+ x2y[label=3];
+ y2x[label=2];
+ x2y,y2x[shape=circle, fontcolor=red, style=dashed,
+ style=filled, fillcolor=skyblue];
+
+}
+
+https://dreampuf.github.io/GraphvizOnline
