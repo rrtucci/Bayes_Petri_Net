@@ -39,8 +39,6 @@ def get_places_tras_arcs(pfier, verbose=False):
         print("\ntransitions:")
         for tra in tras:
             tra.describe_self()
-
-
     return places, tras, arcs
 
 if __name__ == "__main__":
@@ -49,8 +47,8 @@ if __name__ == "__main__":
                                "b": ["c", "d"],
                                "c": "d"}
         pfier = Petrifier(bnet_pa_to_children)
-
         places, tras, arcs = get_places_tras_arcs(pfier, verbose=True)
+        pnet = Petri_Net(places, tras, arcs)
 
     main()
 
