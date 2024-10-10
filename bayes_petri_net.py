@@ -1,7 +1,7 @@
 from Petrifier import *
 from generic_petri_net import *
 
-def get_petrified_places_tras_arcs(pfier, verbose=False):
+def get_petrified_places_arcs_tras(pfier, verbose=False):
     places = []
     for pname, content in pfier.place_to_content.items():
         place = Place(pname, content)
@@ -39,7 +39,7 @@ def get_petrified_places_tras_arcs(pfier, verbose=False):
         print("\ntransitions:")
         for tra in tras:
             tra.describe_self()
-    return places, tras, arcs
+    return places, arcs, tras
 
 if __name__ == "__main__":
     def main():
@@ -47,7 +47,7 @@ if __name__ == "__main__":
                                "b": ["c", "d"],
                                "c": "d"}
         pfier = Petrifier(bnet_pa_to_children, verbose=False)
-        places, tras, arcs = get_petrified_places_tras_arcs(pfier,
+        places, tras, arcs = get_petrified_places_arcs_tras(pfier,
                                                             verbose=False)
         pnet = Petri_Net(places, tras, arcs)
         pnet.describe_current_markings()

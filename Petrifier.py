@@ -1,4 +1,4 @@
-
+from utils import get_gray_tone
 
 class Petrifier:
     def __init__(self,
@@ -47,15 +47,6 @@ class Petrifier:
         if verbose:
             print("bnet_nds=", self.bnet_nds)
 
-
-    def get_gray_tone(self, i):
-
-        if i < 0 or i >= self.num_grays:
-            raise ValueError("i should be in the range [0, num_grays]")
-        tone_value = int((self.num_grays-i-1)*255/ (self.num_grays-1))
-        hex_value = f"{tone_value:02x}"  # Convert to 2-digit hex
-        return f"#{hex_value}{hex_value}{hex_value}"  # Return the gray color
-
     def write_petrified_bnet_file(self, out_fname, red_upstream=True):
         with open(out_fname, "w") as f:
             str0 = "digraph G {\n"
@@ -79,18 +70,19 @@ class Petrifier:
                     str0 += upstream_nd + "->" + ar[1]
                     str0 += "[style=dotted, color=red];\n"
 
-                str0 += ar[0] + "[shape=none];\n"
-                str0 += ar[1] + "[shape=none];\n"
-
                 u_content= self.place_to_content[upstream_nd]
                 d_content = self.place_to_content[downstream_nd]
                 str1 = "[shape=circle, style=filled, fontcolor=red, "
+                tone = get_gray_tone(self.num_grays, d_content)
                 str0 += downstream_nd + str1 + \
-                        f'fillcolor="{self.get_gray_tone(d_content)}", ' +\
+                        f'fillcolor="{tone}", ' +\
                         f"label={d_content}];\n"
+                tone = get_gray_tone(self.num_grays, u_content)
                 str0 += upstream_nd + str1 + \
-                        f'fillcolor="{self.get_gray_tone(u_content)}", ' + \
+                        f'fillcolor="{tone}", ' + \
                         f"label={u_content}];\n"
+            for name in self.bnet_nds:
+                str0 += name + "[shape=none];\n"
             str0 += "}"
             f.write(str0)
 
@@ -99,11 +91,8 @@ if __name__ == "__main__":
         bnet_pa_to_children = {"a": ["b", "c"],
                                "b": ["c", "d"],
                                "c": "d"}
-        out_fname = "petri_bayes.txt"
+        out_fname = "dot_atlas_of_bayes_petri_nets/wet_grass.txt"
         pfier = Petrifier(bnet_pa_to_children, verbose=True)
-        print("gray_tones=",
-            [pfier.get_gray_tone(i) for i in range(pfier.num_grays)])
-
         pfier.write_petrified_bnet_file(out_fname)
 
     main()
