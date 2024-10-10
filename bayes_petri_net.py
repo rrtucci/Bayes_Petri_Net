@@ -1,32 +1,32 @@
 from Petrifier import *
 from generic_petri_net import *
 
-def get_places_tras_arcs(pfier, verbose=False):
+def get_petrified_places_tras_arcs(pfier, verbose=False):
     places = []
-    for name, content in pfier.place_to_content.items():
-        place = Place(name, content)
+    for pname, content in pfier.place_to_content.items():
+        place = Place(pname, content)
         places.append(place)
 
     arcs=[]
-    for name in pfier.place_names:
-        x1, x2 = name.split("2")
-        arc = Arc((x1, name), capacity=1)
+    for pname in pfier.place_names:
+        x1, x2 = pname.split("2")
+        arc = Arc((x1, pname), capacity=1)
         arcs.append(arc)
-        arc = Arc((name, x2), capacity=1)
+        arc = Arc((pname, x2), capacity=1)
         arcs.append(arc)
 
     tras = []
     for tra_name in pfier.bnet_nds:
         in_arcs = []
         out_arcs = []
-        for name in pfier.place_names:
-            x1, x2 = name.split("2")
+        for pname in pfier.place_names:
+            x1, x2 = pname.split("2")
             if x2 == tra_name:
-                in_arc = Arc((x1, name), capacity=1)
-                in_arcs.append(in_arc)
-            if x1 == tra_name:
-                out_arc = Arc((name, x2), capacity=1)
+                out_arc = Arc((x1, pname), capacity=1)
                 out_arcs.append(out_arc)
+            if x1 == tra_name:
+                in_arc = Arc((pname, x2), capacity=1)
+                in_arcs.append(in_arc)
         tra = Transition(tra_name, in_arcs, out_arcs)
         tras.append(tra)
     if verbose:
@@ -46,9 +46,13 @@ if __name__ == "__main__":
         bnet_pa_to_children = {"a": ["b", "c"],
                                "b": ["c", "d"],
                                "c": "d"}
-        pfier = Petrifier(bnet_pa_to_children)
-        places, tras, arcs = get_places_tras_arcs(pfier, verbose=True)
+        pfier = Petrifier(bnet_pa_to_children, verbose=False)
+        places, tras, arcs = get_petrified_places_tras_arcs(pfier,
+                                                            verbose=False)
         pnet = Petri_Net(places, tras, arcs)
+        pnet.describe_current_markings()
+        pnet.fire_transition(tras[1])
+        pnet.describe_current_markings()
 
     main()
 

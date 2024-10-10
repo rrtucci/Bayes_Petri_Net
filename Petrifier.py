@@ -21,8 +21,8 @@ class Petrifier:
             self.place_names.append(pa + "2" + ch)
             self.place_names.append(ch + "2" + pa)
         if verbose:
-            print(self.bnet_arrows)
-            print(self.place_names)
+            print("bnet_arrows=", self.bnet_arrows)
+            print("place_names=", self.place_names)
 
         if place_to_content is None:
             self.place_to_content = \
@@ -31,6 +31,8 @@ class Petrifier:
             for place in range(len(self.place_names)):
                 if place not in place_to_content:
                     place_to_content[place]=1
+        if verbose:
+            print("place_to_content=", self.place_to_content)
         max_content = max(self.place_to_content.values())
         if max_content > self.num_grays:
             self.num_grays = max_content
@@ -40,8 +42,10 @@ class Petrifier:
             if pa not in self.bnet_nds:
                 self.bnet_nds.append(pa)
             for ch in children:
-                if ch not in children:
+                if ch not in self.bnet_nds:
                     self.bnet_nds.append(ch)
+        if verbose:
+            print("bnet_nds=", self.bnet_nds)
 
 
     def get_gray_tone(self, i):
@@ -97,7 +101,8 @@ if __name__ == "__main__":
                                "c": "d"}
         out_fname = "petri_bayes.txt"
         pfier = Petrifier(bnet_pa_to_children, verbose=True)
-        print([pfier.get_gray_tone(i) for i in range(pfier.num_grays)])
+        print("gray_tones=",
+            [pfier.get_gray_tone(i) for i in range(pfier.num_grays)])
 
         pfier.write_petrified_bnet_file(out_fname)
 
