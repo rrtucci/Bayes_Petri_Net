@@ -15,15 +15,15 @@ def get_gray_tone(num_grays, i):
     return f"#{hex_value}{hex_value}{hex_value}"  # Return the gray color
 
 def get_label_value(str0):
-    match = re.search(r'label=(\d+)', str0)
+    match = re.search(r'label=(-?\d+)', str0)
     if match:
         return int(match.group(1))
     else:
         return None
 
-def draw(dot_file_path, jupyter=True):
+def draw_dot_file(dot_file_path, jupyter=True):
     """
-    This method uses graphviz to draw the dot file located at
+    This method uses graphviz to draw_dot_file the dot file located at
     dot_file_path. It creates a temporary file called tempo.png with a
     png of the dot file. If jupyter=True, it embeds the png in a jupyter
     notebook. If jupyter=False, it opens a window showing the png.
@@ -41,7 +41,7 @@ def draw(dot_file_path, jupyter=True):
     """
     s = gv.Source.from_file(dot_file_path)
 
-    # using display(s) will draw the graph but will not embed it
+    # using display(s) will draw_dot_file the graph but will not embed it
     # permanently in the notebook. To embed it permanently,
     # must generate temporary image file and use Image().
     # display(s)
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         num_grays = 10
         print("gray_tones=",
             [get_gray_tone(num_grays, i) for i in range(num_grays)])
-        str0 = "my name label=56is bob"
+        str0 = "my name label=-56is bob"
         print(get_label_value(str0))
 
     main()

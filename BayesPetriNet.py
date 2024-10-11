@@ -1,5 +1,5 @@
 from Petrifier import *
-from generic_petri_net import *
+from PetriNet import *
 
 def get_petrified_places_arcs_tras(pfier, verbose=False):
     places = []
