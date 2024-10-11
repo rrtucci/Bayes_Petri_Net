@@ -1,5 +1,5 @@
 # https://github.com/vvasilescu-uni/OOP-Homework-2
-from utils import get_label_value, get_gray_tone
+from utils import get_label_value, get_gray_tone, draw
 
 class Place:
     def __init__(self, name, content):
@@ -33,7 +33,9 @@ class Transition:
         for arc in self.out_arcs:
             print(arc)
 
-class Petri_Net:
+
+
+class PetriNet:
     def __init__(self,
                  places,
                  arcs,
@@ -91,7 +93,6 @@ class Petri_Net:
             out_place.content += arc.capacity
 
 
-
     def describe_current_markings(self):
         print("current markings:", [(p.name, p.content) for p in self.places])
 
@@ -115,7 +116,8 @@ class Petri_Net:
             str0 += "}"
             f.write(str0)
 
-    def read_dot_file(self, fname):
+    @staticmethod
+    def read_dot_file(fname):
         places = []
         arcs = []
         tras = []
@@ -127,15 +129,17 @@ class Petri_Net:
                     if "digraph" in line:
                         pass
                     elif "->" in line:
-                        nd1, nd2 = line.split("->")
-                        arc = Arc((nd1, nd2), 1)
+                        content = get_label_value(line)
+                        nd1, x = line.split("->")
+                        nd2 = x.split("[")[0]
+                        arc = Arc((nd1.strip(), nd2.strip()), content)
                         arcs.append(arc)
                     elif "shape=circle" in line:
                         pname = line.split("[")[0].strip()
                         content = get_label_value(line)
                         p = Place(pname, content)
                         places.append(p)
-                    elif "shape=none":
+                    elif "shape=none" in line:
                         name = line.split("[")[0].strip()
                         tra_names.append(name)
         pnames = [p.name for p in places]
@@ -147,14 +151,26 @@ class Petri_Net:
                     in_arcs.append(arc)
                 elif arc.name_pair[1] in pnames:
                     out_arcs.append(arc)
-                tra = Transition(tra_name, in_arcs, out_arcs)
-                tras.append(tra)
+            tra = Transition(tra_name, in_arcs, out_arcs)
+            tras.append(tra)
         return places, arcs, tras
+
+    @staticmethod
+    def describe_PAT(places, arcs, tras):
+        print("\nplaces:")
+        for p in places:
+            print(p)
+        print("\narcs:")
+        for a in arcs:
+            print(a)
+        print("\ntransitions:")
+        for tra in tras:
+            tra.describe_self()
 
 
 
 if __name__ == "__main__":
-    def main():
+    def main1():
         places=[Place("p1", 5), Place("p2", 1), Place("p3", 1)]
         arc1 = Arc(("p1","x1"), 1)
         arc2 = Arc(("x1", "p2"), 1)
@@ -164,9 +180,17 @@ if __name__ == "__main__":
         out_arcs = [arc2, arc3]
         tra = Transition("x1", in_arcs, out_arcs)
         tras = [tra]
-        pnet = Petri_Net(places, arcs, tras)
+        pnet = PetriNet(places, arcs, tras)
         pnet.describe_current_markings()
         pnet.write_dot_file("dot_atlas_of_petri_nets/fork.txt")
         pnet.fire_transition(tra)
         pnet.describe_current_markings()
-    main()
+    def main2():
+        print("\nread test:")
+        places, arcs, tras = PetriNet.read_dot_file(
+            "dot_atlas_of_petri_nets/fork.txt")
+        PetriNet.describe_PAT(places, arcs, tras)
+        draw("dot_atlas_of_petri_nets/fork.txt", jupyter=False)
+
+    # main1()
+    main2()

@@ -30,15 +30,7 @@ def get_petrified_places_arcs_tras(pfier, verbose=False):
         tra = Transition(tra_name, in_arcs, out_arcs)
         tras.append(tra)
     if verbose:
-        print("\nplaces:")
-        for p in places:
-            print(p)
-        print("\narcs:")
-        for a in arcs:
-            print(a)
-        print("\ntransitions:")
-        for tra in tras:
-            tra.describe_self()
+        PetriNet.describe_PAT(places, arcs, tras)
     return places, arcs, tras
 
 if __name__ == "__main__":
@@ -49,7 +41,7 @@ if __name__ == "__main__":
         pfier = Petrifier(bnet_pa_to_children, verbose=False)
         places, tras, arcs = get_petrified_places_arcs_tras(pfier,
                                                             verbose=False)
-        pnet = Petri_Net(places, tras, arcs)
+        pnet = PetriNet(places, tras, arcs)
         pnet.describe_current_markings()
         pnet.fire_transition(tras[1])
         pnet.describe_current_markings()
