@@ -91,7 +91,7 @@ if __name__ == "__main__":
         bnet_pa_to_children = {"a": ["b", "c"],
                                "b": ["c", "d"],
                                "c": "d"}
-        out_fname = "dot_atlas_of_bayes_petri_nets/wet_grass.txt"
+        out_fname = "dot_atlas/BPN_wet_grass.txt"
         pfier = Petrifier(bnet_pa_to_children, verbose=True)
         pfier.write_petrified_bnet_file(out_fname)
 

@@ -182,15 +182,15 @@ if __name__ == "__main__":
         tras = [tra]
         pnet = PetriNet(places, arcs, tras)
         pnet.describe_current_markings()
-        pnet.write_dot_file("dot_atlas_of_petri_nets/fork.txt")
+        pnet.write_dot_file("dot_atlas/PN_fork.txt")
         pnet.fire_transition(tra)
         pnet.describe_current_markings()
     def main2():
         print("\nread test:")
         places, arcs, tras = PetriNet.read_dot_file(
-            "dot_atlas_of_petri_nets/fork.txt")
+            "dot_atlas/PN_fork.txt")
         PetriNet.describe_PAT(places, arcs, tras)
-        draw("dot_atlas_of_petri_nets/fork.txt", jupyter=False)
+        draw("dot_atlas/PN_fork.txt", jupyter=False)
 
     # main1()
     main2()
