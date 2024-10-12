@@ -1,6 +1,5 @@
 # https://github.com/vvasilescu-uni/OOP-Homework-2
 from utils import get_label_value, get_gray_tone, draw_dot_file
-import tempfile
 
 class Place:
     def __init__(self, name, content):
@@ -46,6 +45,8 @@ class Transition:
 
 
 class PetriNet:
+    global step_num
+    step_num=0
     def __init__(self,
                  places,
                  arcs,
@@ -91,6 +92,9 @@ class PetriNet:
                 return tra
         assert False, f"no transition named {name}"
 
+    def get_firing_tras_from_names(self, names):
+        return [self.get_tra_from_name(name) for name in names]
+
     def is_enabled(self, tra):
         for arc in tra.in_arcs:
             in_place = self.get_place_from_name(arc.name_pair[0])
@@ -116,6 +120,22 @@ class PetriNet:
 
     def describe_current_markings(self):
         print("current markings:", [(p.name, p.content) for p in self.places])
+
+    def inner_step(self,
+                   firing_tras=None,
+                   jupyter=True,
+                   red_arc_list=None):
+        global step_num
+        print("step_num=", step_num)
+        assert firing_tras is not None
+        if step_num > len(firing_tras):
+            return
+        if step_num != 0:
+            tra = firing_tras[step_num - 1]
+            self.fire_transition(tra)
+        self.describe_current_markings()
+        self.draw(jupyter, red_arc_list)
+        step_num += 1
 
     def write_dot_file(self,
                        fname,
