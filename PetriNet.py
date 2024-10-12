@@ -102,6 +102,9 @@ class PetriNet:
                 return False
         return True
 
+    def describe_current_markings(self):
+        print("current markings:", [(p.name, p.content) for p in self.places])
+
     def fire_transition(self, tra):
 
         if not self.is_enabled(tra):
@@ -118,8 +121,14 @@ class PetriNet:
             out_place = self.get_place_from_name(arc.name_pair[1])
             out_place.content += arc.capacity
 
-    def describe_current_markings(self):
-        print("current markings:", [(p.name, p.content) for p in self.places])
+    def fire_transition_list(self,
+                  firing_tras=None,
+                  jupyter=True,
+                  red_arc_list=None):
+        for tra in firing_tras:
+            self.fire_transition(tra)
+        self.describe_current_markings()
+        self.draw(jupyter, red_arc_list)
 
     def inner_step(self,
                    firing_tras=None,
