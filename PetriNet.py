@@ -132,7 +132,6 @@ class PetriNet:
 
     def inner_step(self,
                    firing_tras=None,
-                   jupyter=True,
                    red_arc_list=None):
         global step_num
         print("step_num=", step_num)
@@ -143,7 +142,7 @@ class PetriNet:
             tra = firing_tras[step_num - 1]
             self.fire_transition(tra)
         self.describe_current_markings()
-        self.draw(jupyter, red_arc_list)
+        self.draw(jupyter=True, red_arc_list=red_arc_list)
         step_num += 1
 
     def write_dot_file(self,
