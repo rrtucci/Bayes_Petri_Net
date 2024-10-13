@@ -1,55 +1,6 @@
 # https://github.com/vvasilescu-uni/OOP-Homework-2
 from utils import get_label_value, get_gray_tone, draw_dot_file
-
-
-class Place:
-    def __init__(self, name, content):
-        self.name = name
-        self.content = content
-
-    def __str__(self):
-        return f"({self.name}, {self.content})"
-
-
-class Arc:
-    def __init__(self, name_pair, capacity, inv):
-        self.name_pair = name_pair
-        self.capacity = capacity
-        self.inv = inv
-        if inv:
-            self.reverse()
-
-    def __str__(self):
-        return f"({self.name_pair}, {self.capacity}, {self.inv})"
-
-    def __eq__(self, other):
-        return self.name_pair == other.name_pair and \
-                self.capacity == other.capacity and \
-                self.inv == other.inv
-
-    def reverse(self):
-        self.inv = not self.inv
-        self.name_pair = (self.name_pair[1], self.name_pair[0])
-
-
-class Transition:
-    def __init__(self,
-                 name,
-                 in_arcs,
-                 out_arcs):
-        self.name = name
-        self.in_arcs = in_arcs
-        self.out_arcs = out_arcs
-
-    def describe_self(self):
-        print(f"\nname={self.name}")
-        print("in_arcs:")
-        for arc in self.in_arcs:
-            print(arc)
-        print("out_arcs:")
-        for arc in self.out_arcs:
-            print(arc)
-
+from PAT import *
 
 class PetriNet:
     global step_num
@@ -116,18 +67,6 @@ class PetriNet:
             if arc.capacity > in_place.content:
                 return False
         return True
-
-    @staticmethod
-    def describe_PAT(places, arcs, tras):
-        print("\nplaces:")
-        for p in places:
-            print(p)
-        print("\narcs:")
-        for a in arcs:
-            print(a)
-        print("\ntransitions:")
-        for tra in tras:
-            tra.describe_self()
 
     def describe_current_markings(self):
         print("current markings:", [(p.name, p.content) for p in self.places])
@@ -255,7 +194,7 @@ class PetriNet:
             tras.append(tra)
         PAT = (places, arcs, tras)
         if verbose:
-            PetriNet.describe_PAT(*PAT)
+            describe_PAT(*PAT)
         return PetriNet(*PAT)
 
     def draw(self, jupyter, inv_arcs=None):

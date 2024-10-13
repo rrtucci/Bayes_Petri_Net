@@ -1,4 +1,5 @@
 from utils import get_gray_tone
+from PAT import *
 
 class Petrifier:
     def __init__(self,
@@ -47,6 +48,38 @@ class Petrifier:
         if verbose:
             print("bnet_nds=", self.bnet_nds)
 
+    def get_petrified_PAT(self, verbose=False):
+        places = []
+        for pname, content in self.place_to_content.items():
+            place = Place(pname, content)
+            places.append(place)
+
+        arcs = []
+        for pname in self.place_names:
+            x1, x2 = pname.split("2")
+            arc = Arc((x1, pname), capacity=1)
+            arcs.append(arc)
+            arc = Arc((pname, x2), capacity=1)
+            arcs.append(arc)
+
+        tras = []
+        for tra_name in self.bnet_nds:
+            in_arcs = []
+            out_arcs = []
+            for pname in self.place_names:
+                x1, x2 = pname.split("2")
+                if x2 == tra_name:
+                    out_arc = Arc((x1, pname), capacity=1)
+                    out_arcs.append(out_arc)
+                if x1 == tra_name:
+                    in_arc = Arc((pname, x2), capacity=1)
+                    in_arcs.append(in_arc)
+            tra = Transition(tra_name, in_arcs, out_arcs)
+            tras.append(tra)
+        if verbose:
+            describe_PAT(places, arcs, tras)
+        return places, arcs, tras
+
     def write_petrified_bnet_file(self, out_fname, red_upstream=True):
         with open(out_fname, "w") as f:
             str0 = "digraph G {\n"
@@ -87,7 +120,7 @@ class Petrifier:
             f.write(str0)
 
 if __name__ == "__main__":
-    def main():
+    def main1():
         bnet_pa_to_children = {"a": ["b", "c"],
                                "b": ["c", "d"],
                                "c": "d"}
@@ -95,7 +128,7 @@ if __name__ == "__main__":
         pfier = Petrifier(bnet_pa_to_children, verbose=True)
         pfier.write_petrified_bnet_file(out_fname)
 
-    main()
+    main1()
 
 
 
