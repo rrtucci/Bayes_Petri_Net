@@ -139,14 +139,18 @@ class PetriNet:
             return
         else:
             print(f"Fired transition {tra.name}.")
-
+        # print("==========", tra.name)
+        # self.describe_current_markings()
         for arc in tra.in_arcs:
+            # print("====in arc=", arc)
             in_place = self.get_place_from_name(arc.name_pair[0])
             in_place.content -= arc.capacity
 
         for arc in tra.out_arcs:
+            # print("====out arc=", arc)
             out_place = self.get_place_from_name(arc.name_pair[1])
             out_place.content += arc.capacity
+        # self.describe_current_markings()
 
     def fire_transition_list(self,
                              firing_tras=None,
@@ -241,9 +245,11 @@ class PetriNet:
             out_arcs = []
             in_arcs = []
             for arc in arcs:
-                if arc.name_pair[0] in pnames:
+                if arc.name_pair[0] in pnames and\
+                        arc.name_pair[1] == tra_name:
                     in_arcs.append(arc)
-                elif arc.name_pair[1] in pnames:
+                elif arc.name_pair[1] in pnames and\
+                        arc.name_pair[0] == tra_name:
                     out_arcs.append(arc)
             tra = Transition(tra_name, in_arcs, out_arcs)
             tras.append(tra)
