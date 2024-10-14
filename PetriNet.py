@@ -192,10 +192,10 @@ class PetriNet:
                     out_arcs.append(arc)
             tra = Transition(tra_name, in_arcs, out_arcs)
             tras.append(tra)
-        PAT = (places, arcs, tras)
+        pat = (places, arcs, tras)
         if verbose:
-            describe_PAT(*PAT)
-        return PetriNet(*PAT)
+            describe_PAT(*pat)
+        return PetriNet(*pat)
 
     def draw(self, jupyter, inv_arcs=None):
         fname = "tempo.txt"
