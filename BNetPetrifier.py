@@ -1,16 +1,17 @@
 from utils import get_gray_tone, complete_dict, reverse_pair
+from utils import get_pa_to_descendants
 from PAT import *
 
 class BNetPetrifier:
     def __init__(self,
                  bnet_pa_to_children,
-                 bnet_nd_to_cond_flag=None,
+                 cond_bnet_nds=None,
                  buffer_nd_to_content=None,
                  petri_arrow_to_capacity=None,
                  num_grays=10,
                  verbose=False):
         self.bnet_pa_to_children = bnet_pa_to_children
-        self.bnet_nd_to_cond_flag = bnet_nd_to_cond_flag
+        self.cond_bnet_nds = cond_bnet_nds
         self.buffer_nd_to_content = buffer_nd_to_content
         self.petri_arrow_to_capacity = petri_arrow_to_capacity
         self.num_grays = num_grays
@@ -31,6 +32,12 @@ class BNetPetrifier:
                     self.bnet_nds.append(ch)
         if verbose:
             print("bnet_nds=", self.bnet_nds)
+            print("cond_bnet_nds=", self.cond_bnet_nds)
+
+        self.pa_to_descendants = get_pa_to_descendants(
+            self.bnet_pa_to_children)
+        if verbose:
+            print("bnet_pa_to_children=", self.pa_to_descendants)
             
         for pa, children in bnet_pa_to_children.items():
             self.bnet_arrows += [(pa, ch) for ch in children]
@@ -53,14 +60,6 @@ class BNetPetrifier:
         if verbose:
             print("petri_arrows=", self.petri_arrows)
             print("inv_petri_arrows=", self.inv_petri_arrows)
-            
-        self.bnet_nd_to_cond_flag = complete_dict(
-            self.bnet_nd_to_cond_flag,
-            self.bnet_nds,
-            False)
-        if verbose:
-            print("bnet_nd_to_cond_flag=", 
-                  self.bnet_nd_to_cond_flag)
 
         self.buffer_nd_to_content = complete_dict(
             self.buffer_nd_to_content,
@@ -115,6 +114,28 @@ class BNetPetrifier:
             describe_PAT(places, arcs, tras)
         return places , arcs, tras
 
+    def nd2_is_collider(self, nd1, nd2, nd3):
+        if (nd1, nd2) in self.bnet_nds and \
+                (nd3, nd2) in self.bnet_nds:
+            return True
+        else:
+            return False
+
+    def nd2_is_blocked(self, nd1, nd2, nd3):
+        blocked = True
+        if self.nd2_is_collider(nd1, nd2, nd3):
+            if nd2 in self.cond_bnet_nds:
+                blocked = False
+            for des in self.pa_to_descendants[nd2]:
+                if des in self.cond_bnet_nds:
+                    blocked = False
+        else: # not collider
+            if nd2 not in self.cond_bnet_nds:
+                blocked = False
+        return blocked
+
+
+
     def write_dot_file_of_BPN(self, out_fname, red_upstream=True):
         def get_cap_inv_strings(petri_arrow):
             cap_str = f", label=" \
@@ -141,7 +162,12 @@ class BNetPetrifier:
                 tone = get_gray_tone(self.num_grays, content)
                 str0 += f'fillcolor="{tone}", label={content}];\n'
             for name in self.bnet_nds:
-                str0 += name + "[shape=none];\n"
+                if name in self.cond_bnet_nds:
+                    color_str = \
+                        "[shape=circle, style=filled, color=yellow];\n"
+                else:
+                    color_str = "[shape=none];\n"
+                str0 += name + color_str
             str0 += "}"
             f.write(str0)
 

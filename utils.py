@@ -57,7 +57,7 @@ def draw_dot_file(dot_file_path, jupyter=True):
         open_image("tempo123.png").show()
 
 
-def get_descendants(parent_to_children):
+def get_pa_to_descendants(parent_to_children):
     # Dictionary to store the result: parent -> descendants
     parent_to_descendants = {}
 
