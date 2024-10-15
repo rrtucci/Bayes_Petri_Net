@@ -113,10 +113,10 @@ class PetriNet:
 
     def write_dot_file(self,
                        fname,
-                       num_grays=10,
                        inv_arcs=None,
                        omit_unit_caps=False,
-                       place_shape="circle"):
+                       place_shape="circle",
+                       num_grays=10):
         with open(fname, "w") as f:
             str0 = "digraph G {\n"
             for arc in self.arcs:
@@ -144,7 +144,7 @@ class PetriNet:
                 place_str = f"[shape={place_shape}," +\
                           "style=filled," +\
                           "fontcolor=red,"
-                tone = get_gray_tone(num_grays, p.content)
+                tone = get_gray_tone(p.content, num_grays)
                 str0 += p.name + place_str + \
                         f'fillcolor="{tone}", ' + \
                         f"label={p.content}];\n"

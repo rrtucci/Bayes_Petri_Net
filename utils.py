@@ -1,5 +1,4 @@
 import re
-
 import graphviz as gv
 from IPython.display import display, Image
 from PIL.Image import open as open_image
@@ -8,7 +7,20 @@ import pydotplus as pdp
 import os
 
 
-def get_gray_tone(num_grays, i):
+def get_gray_tone(i, num_grays=10):
+    """
+
+    Parameters
+    ----------
+    num_grays: int
+    i: int
+
+    Returns
+    -------
+    str
+        string of a hex number like '#ffffff' (white) or '#000000' (black)
+
+    """
     if i < 0 or i >= num_grays:
         raise ValueError("i should be in the range [0, num_grays]")
     tone_value = int((num_grays - i - 1) * 255 / (num_grays - 1))
@@ -17,6 +29,17 @@ def get_gray_tone(num_grays, i):
 
 
 def get_label_value(str0):
+    """
+
+    Parameters
+    ----------
+    str0: str
+
+    Returns
+    -------
+    int|None
+
+    """
     match = re.search(r'label=(-?\d+)', str0)
     if match:
         return int(match.group(1))
@@ -58,6 +81,16 @@ def draw_dot_file(dot_file_path, jupyter=True):
 
 
 def get_pa_to_descendants(parent_to_children):
+    """
+
+    Parameters
+    ----------
+    parent_to_children: dict[str, list[str]]
+
+    Returns
+    -------
+    dict[str, list[str]]
+    """
     # Dictionary to store the result: parent -> descendants
     parent_to_descendants = {}
 
@@ -89,7 +122,21 @@ def get_pa_to_descendants(parent_to_children):
 
     return parent_to_descendants
 
+
 def complete_dict(dictio, all_keys, default_val):
+    """
+
+    Parameters
+    ----------
+    dictio: dict[str, list[int]]
+    all_keys: list[str]
+    default_val: int
+
+    Returns
+    -------
+    dict[str, list[int]]
+
+    """
     if not dictio:
         dictio = {}
         for key in all_keys:
@@ -100,7 +147,19 @@ def complete_dict(dictio, all_keys, default_val):
                 dictio[key] = default_val
     return dictio
 
+
 def reverse_pair(x):
+    """
+
+    Parameters
+    ----------
+    x: tuple(str, str)
+
+    Returns
+    -------
+    tuple(str, str)
+
+    """
     x1, x2 = x
     x1, x2 = x2, x1
     return (x1, x2)
@@ -110,7 +169,7 @@ if __name__ == "__main__":
     def main1():
         num_grays = 10
         print("gray_tones=",
-              [get_gray_tone(num_grays, i) for i in range(num_grays)])
+              [get_gray_tone(i, num_grays) for i in range(num_grays)])
         str0 = "my name label=-56is bob"
         print(get_label_value(str0))
 
@@ -123,7 +182,7 @@ if __name__ == "__main__":
             'C': ['D']
         }
 
-        parent_to_descendants = get_descendants(parent_to_children)
+        parent_to_descendants = get_pa_to_descendants(parent_to_children)
         print(parent_to_descendants)
 
 

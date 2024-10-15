@@ -9,14 +9,11 @@ class BNetPetrifier:
                  cond_bnet_nds=None,
                  buffer_nd_to_content=None,
                  petri_arrow_to_capacity=None,
-                 num_grays=10,
                  verbose=False):
         self.bnet_pa_to_children = bnet_pa_to_children
         self.cond_bnet_nds = cond_bnet_nds
         self.buffer_nd_to_content = buffer_nd_to_content
         self.petri_arrow_to_capacity = petri_arrow_to_capacity
-        self.num_grays = num_grays
-        assert (self.num_grays >= 2)
         self.verbose = verbose
 
         self.bnet_nds = []
@@ -69,9 +66,6 @@ class BNetPetrifier:
         if verbose:
             print("buffer_nd_to_content=",
                   self.buffer_nd_to_content)
-        max_content = max(self.buffer_nd_to_content.values())
-        if max_content > self.num_grays:
-            self.num_grays = max_content
 
         self.petri_arrow_to_capacity = complete_dict(
             self.petri_arrow_to_capacity,
@@ -142,7 +136,8 @@ class BNetPetrifier:
     def write_dot_file(self,
                        fname,
                        omit_unit_caps=False,
-                       place_shape="circle"):
+                       place_shape="circle",
+                       num_grays=10):
         def get_cap_inv_strings(petri_arrow):
             cap = self.petri_arrow_to_capacity[petri_arrow]
             # allow for possibility of decimal caps
@@ -168,11 +163,14 @@ class BNetPetrifier:
                 cap_str, inv_str = get_cap_inv_strings(petri_arrow)
                 str0 += f"[style=dotted{inv_str}{cap_str}];\n"
 
+            max_content = max(self.buffer_nd_to_content.values())
+            if max_content > num_grays:
+                num_grays = max_content
             for buffer_nd in self.buffer_nds:
                 str0 += f"{buffer_nd}["
                 str0 += f"shape={place_shape}, style=filled, fontcolor=red,"
                 content = self.buffer_nd_to_content[buffer_nd]
-                tone = get_gray_tone(self.num_grays, content)
+                tone = get_gray_tone(content, num_grays)
                 str0 += f'fillcolor="{tone}", label={content}];\n'
             for name in self.bnet_nds:
                 if self.cond_bnet_nds and name in self.cond_bnet_nds:
@@ -190,7 +188,6 @@ class BNetPetrifier:
         cond_bnet_nds = []
         buffer_nd_to_content = {}
         petri_arrow_to_capacity = {}
-        num_grays = 10
         with open(fname, "r") as f:
             for line in f:
                 line.strip()
@@ -229,7 +226,6 @@ class BNetPetrifier:
             cond_bnet_nds,
             buffer_nd_to_content,
             petri_arrow_to_capacity,
-            num_grays,
             verbose)
 
     def draw(self,

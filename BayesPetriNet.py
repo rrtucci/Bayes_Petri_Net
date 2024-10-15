@@ -10,7 +10,6 @@ class BayesPetriNet(PetriNet):
                  cond_bnet_nds=None,
                  buffer_nd_to_content=None,
                  petri_arrow_to_capacity=None,
-                 num_grays=10,
                  verbose=False):
         # petri_arrow_to_capacity = None
         # this will cause all capacities to be set to 1
@@ -21,7 +20,6 @@ class BayesPetriNet(PetriNet):
             cond_bnet_nds,
             buffer_nd_to_content,
             petri_arrow_to_capacity,
-            num_grays,
             verbose)
         super().__init__(*self.petrifier.get_PAT())
 
@@ -74,10 +72,10 @@ class BayesPetriNet(PetriNet):
 
     def write_dot_file(self,
                        fname,
-                       num_grays=10,
                        inv_arcs=None,
                        omit_unit_caps=False,
-                       place_shape="circle"):
+                       place_shape="circle",
+                       num_grays=10):
         assert False, \
             "Use instead the method BNetPetrifier.write_dot_file()"
 
