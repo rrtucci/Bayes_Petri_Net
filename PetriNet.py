@@ -118,14 +118,17 @@ class PetriNet:
     def write_dot_file(self,
                        fname,
                        num_grays=10,
-                       inv_arcs=None):
+                       inv_arcs=None,
+                       omit_unit_caps=False,
+                       place_shape="circle"):
         with open(fname, "w") as f:
             str0 = "digraph G {\n"
             for arc in self.arcs:
                 ar0, ar1 = arc.name_pair
-                cap = arc.capacity
+                # allow for possibility of decimal arrow capacities
+                cap = round(arc.capacity)
                 inv = arc.inv
-                str1 = ""
+                inv_str = ""
                 # if inv_arcs:
                     # print("nmmjkkkkkkkkk",
                     # [str(x) for x in inv_arcs], arc)
@@ -134,14 +137,19 @@ class PetriNet:
                     # print("nmmjk-===============",arc.name_pair)
                     ar0, ar1 = ar1, ar0
                     inv = not inv
-                    str1 = ", arrowhead=inv"
-                str0 += f"{ar0}->{ar1}[label={cap}{str1}];\n"
+                    inv_str = ", arrowhead=inv"
+                cap_str = f"label={cap}"
+                if omit_unit_caps and cap==1:
+                    cap_str = ""
+                str0 += f"{ar0}->{ar1}[{cap_str}{inv_str}];\n"
             max_content = max([p.content for p in self.places])
             num_grays = max(max_content, num_grays)
             for p in self.places:
-                str1 = "[shape=circle, style=filled, fontcolor=red, "
+                place_str = f"[shape={place_shape}, " +\
+                          "style=filled, " +\
+                          "fontcolor=red, "
                 tone = get_gray_tone(num_grays, p.content)
-                str0 += p.name + str1 + \
+                str0 += p.name + place_str + \
                         f'fillcolor="{tone}", ' + \
                         f"label={p.content}];\n"
             for tra in self.tras:
@@ -159,9 +167,7 @@ class PetriNet:
             for line in f:
                 line.strip()
                 if line:
-                    if "digraph" in line:
-                        pass
-                    elif "->" in line:
+                    if "->" in line:
                         capacity = get_label_value(line)
                         inv = ("arrowhead=inv" in line)
                         nd1, x = line.split("->")
@@ -171,7 +177,7 @@ class PetriNet:
                                   capacity,
                                   inv)
                         arcs.append(arc)
-                    elif "shape=circle" in line:
+                    elif "fontcolor=red" in line:
                         pname = line.split("[")[0].strip()
                         content = get_label_value(line)
                         p = Place(pname, content)
@@ -197,14 +203,21 @@ class PetriNet:
             describe_PAT(*pat)
         return PetriNet(*pat)
 
-    def draw(self, jupyter, inv_arcs=None):
+    def draw(self, jupyter,
+             inv_arcs=None,
+             omit_unit_caps=False,
+             place_shape="circle"):
         fname = "tempo.txt"
-        self.write_dot_file(fname, inv_arcs=inv_arcs)
+        self.write_dot_file(fname,
+                            inv_arcs=inv_arcs,
+                            omit_unit_caps=omit_unit_caps,
+                            place_shape=place_shape)
         draw_dot_file(fname, jupyter=jupyter)
 
 
 if __name__ == "__main__":
     def main1():
+        fname1 = "dot_atlas/PN_fork(1).txt"
         places = [Place("p1", 5), Place("p2", 1), Place("p3", 1)]
         arc1 = Arc(("p1", "x1"), 1, False)
         arc2 = Arc(("x1", "p2"), 1, False)
@@ -215,19 +228,17 @@ if __name__ == "__main__":
         tra = Transition("x1", in_arcs, out_arcs)
         tras = [tra]
         pnet = PetriNet(places, arcs, tras)
-        pnet.write_dot_file("dot_atlas/PN_fork.txt")
+        pnet.write_dot_file(fname1)
 
         pnet.describe_current_markings()
         pnet.fire_transition(tra)
         pnet.describe_current_markings()
 
 
-    def main2(fname):
+    def main2():
+        fname1 = "dot_atlas/PN_fork(1).txt"
         print("\nread test:")
-        pnet = PetriNet.read_dot_file(fname)
+        pnet = PetriNet.read_dot_file(fname1, verbose=True)
         pnet.draw(jupyter=False)
-
-
-    # main1()
-    # main2("dot_atlas/PN_fork.txt")
-    main2("dot_atlas/PN_loop.txt")
+    main1()
+    main2()
