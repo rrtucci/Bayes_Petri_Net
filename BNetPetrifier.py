@@ -132,14 +132,15 @@ class BNetPetrifier:
                 if des in self.cond_bnet_nds:
                     blocked = False
         else:  # not collider
-            if nd2 not in self.cond_bnet_nds:
+            if self.cond_bnet_nds and \
+                    nd2 in self.cond_bnet_nds:
+                blocked = True
+            else:
                 blocked = False
         return blocked
 
     def write_dot_file(self,
                        fname,
-                       num_grays=10,
-                       inv_arrows=None,
                        omit_unit_caps=False,
                        place_shape="circle"):
         def get_cap_inv_strings(petri_arrow):
@@ -169,7 +170,7 @@ class BNetPetrifier:
 
             for buffer_nd in self.buffer_nds:
                 str0 += f"{buffer_nd}["
-                str0 += f"shape={place_shape}, style=filled, fontcolor=red, "
+                str0 += f"shape={place_shape}, style=filled, fontcolor=red,"
                 content = self.buffer_nd_to_content[buffer_nd]
                 tone = get_gray_tone(self.num_grays, content)
                 str0 += f'fillcolor="{tone}", label={content}];\n'
@@ -253,7 +254,5 @@ if __name__ == "__main__":
         petrifier.write_dot_file(fname1)
         petrifier = BNetPetrifier.read_dot_file(fname1, verbose=True)
         petrifier.draw(jupyter=False)
-
-
 
     main1()

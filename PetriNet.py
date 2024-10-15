@@ -91,17 +91,13 @@ class PetriNet:
             out_place.content += arc.capacity
         # self.describe_current_markings()
 
-    def fire_transition_list(self,
-                             firing_tras=None,
-                             jupyter=True,
-                             inv_arcs=None):
+    def fire_transition_list(self, firing_tras):
         for tra in firing_tras:
             self.fire_transition(tra)
         self.describe_current_markings()
-        self.draw(jupyter, inv_arcs)
 
     def inner_step(self,
-                   firing_tras=None,
+                   firing_tras,
                    inv_arcs=None):
         global step_num
         print("step_num=", step_num)
@@ -145,9 +141,9 @@ class PetriNet:
             max_content = max([p.content for p in self.places])
             num_grays = max(max_content, num_grays)
             for p in self.places:
-                place_str = f"[shape={place_shape}, " +\
-                          "style=filled, " +\
-                          "fontcolor=red, "
+                place_str = f"[shape={place_shape}," +\
+                          "style=filled," +\
+                          "fontcolor=red,"
                 tone = get_gray_tone(num_grays, p.content)
                 str0 += p.name + place_str + \
                         f'fillcolor="{tone}", ' + \
@@ -168,6 +164,8 @@ class PetriNet:
                 line.strip()
                 if line:
                     if "->" in line:
+                        assert "[" in line and "]" in line, \
+                            "[] must be in same line"
                         capacity = get_label_value(line)
                         inv = ("arrowhead=inv" in line)
                         nd1, x = line.split("->")
@@ -178,6 +176,8 @@ class PetriNet:
                                   inv)
                         arcs.append(arc)
                     elif "fontcolor=red" in line:
+                        assert "[" in line and "]" in line, \
+                            "[] must be in same line"
                         pname = line.split("[")[0].strip()
                         content = get_label_value(line)
                         p = Place(pname, content)
