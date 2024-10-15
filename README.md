@@ -3,11 +3,11 @@
 ![BPN wet grass](pics/BPN_wet_grass.png)
 *This is a figure of a typical Bayes Petri Net
 (BPN). It was rendered 
-by this softaware via Graphviz. The solid arrows
-and uncircled nodes contitue a Bayesian Network
+by the software in this repo using Graphviz. The solid arrows
+and uncircled nodes constitute a Bayesian Network
 whereas the dotted arrows are the **arcs**,
 the circled nodes are the **places**, and the
-uncicled nodes are the **transitions** of a Petri Net.
+uncicled nodes are the **transitions** of a **Petri Net**.
 The red numbers are the token contents of 
 the place nodes (note that
 we allow them to be fractional)*
@@ -18,7 +18,7 @@ evolution (on a Jupyter notebook) of a
 * special
 Petri Net that we call a **Bayes Petri Net** (BPN).
 
-With every Bayesian Network (BN),
+With every **Bayesian Network** (BN),
 one can define a natural BPN that has the 
 nodes of the BN as the transition nodes of the
 BPN.
