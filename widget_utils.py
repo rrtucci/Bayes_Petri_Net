@@ -3,6 +3,19 @@ from IPython.display import display, clear_output
 
 
 def create_step_button(refresh, inner_step, **kwargs):
+    """
+
+    Parameters
+    ----------
+    refresh: bool
+    inner_step: function
+    kwargs: dict
+
+    Returns
+    -------
+    None
+
+    """
     step_button = widgets.Button(description="Step")
     output = widgets.Output()
     global step_num

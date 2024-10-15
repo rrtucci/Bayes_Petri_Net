@@ -2,7 +2,17 @@
 from utils import get_label_value, get_gray_tone, draw_dot_file
 from PAT import *
 
+
 class PetriNet:
+    """
+
+    Attributes
+    ----------
+    arcs: list[Arc]
+    places: list[Place]
+    step_num: int
+    tras: list[Transition]
+    """
     global step_num
     step_num = 0
 
@@ -10,6 +20,14 @@ class PetriNet:
                  places,
                  arcs,
                  tras):
+        """
+
+        Parameters
+        ----------
+        places: list[Place]
+        arcs: list[Arc]
+        tras: list[Transition]
+        """
         self.places = places
         self.tras = tras
         self.arcs = arcs
@@ -34,18 +52,51 @@ class PetriNet:
                 f"{out_names} not in {place_names}"
 
     def get_place_from_name(self, name):
+        """
+
+        Parameters
+        ----------
+        name: str
+
+        Returns
+        -------
+        Place
+
+        """
         for p in self.places:
             if p.name == name:
                 return p
         assert False, f"no place named {name}"
 
     def get_arc_from_name_pair(self, name_pair):
+        """
+
+        Parameters
+        ----------
+        name_pair: tuple(str, str)
+
+        Returns
+        -------
+        Arc
+
+        """
         for arc in self.arcs:
             if arc.name_pair == name_pair:
                 return arc
         assert False, f"no arc named {name_pair}"
 
     def get_arcs_from_name_pairs(self, name_pairs):
+        """
+
+        Parameters
+        ----------
+        name_pairs: list[tuple[str, str]]
+
+        Returns
+        -------
+        list[Arc]
+
+        """
         arcs = []
         for pair in name_pairs:
             arc = self.get_arc_from_name_pair(pair)
@@ -53,15 +104,48 @@ class PetriNet:
         return arcs
 
     def get_tra_from_name(self, name):
+        """
+
+        Parameters
+        ----------
+        name: str
+
+        Returns
+        -------
+        Transition
+
+        """
         for tra in self.tras:
             if tra.name == name:
                 return tra
         assert False, f"no transition named {name}"
 
     def get_firing_tras_from_names(self, names):
+        """
+
+        Parameters
+        ----------
+        names: list[str]
+
+        Returns
+        -------
+        list[Transition]
+
+        """
         return [self.get_tra_from_name(name) for name in names]
 
     def is_enabled(self, tra):
+        """
+
+        Parameters
+        ----------
+        tra: Transition
+
+        Returns
+        -------
+        bool
+
+        """
         for arc in tra.in_arcs:
             in_place = self.get_place_from_name(arc.name_pair[0])
             if arc.capacity > in_place.content:
@@ -69,10 +153,28 @@ class PetriNet:
         return True
 
     def describe_current_markings(self):
-        print("current markings:", [(p.name, p.content) for p in self.places])
+        """
+
+        Returns
+        -------
+        None
+
+        """
+        print("current markings:",
+              [(p.name, f"{p.content:.2f}") for p in self.places])
 
     def fire_transition(self, tra):
+        """
 
+        Parameters
+        ----------
+        tra; Transition
+
+        Returns
+        -------
+        None
+
+        """
         if not self.is_enabled(tra):
             print(f"Transition {tra.name} is not enabled!")
             return
@@ -92,6 +194,17 @@ class PetriNet:
         # self.describe_current_markings()
 
     def fire_transition_list(self, firing_tras):
+        """
+
+        Parameters
+        ----------
+        firing_tras: list[Transition]
+
+        Returns
+        -------
+        None
+
+        """
         for tra in firing_tras:
             self.fire_transition(tra)
         self.describe_current_markings()
@@ -99,6 +212,18 @@ class PetriNet:
     def inner_step(self,
                    firing_tras,
                    inv_arcs=None):
+        """
+
+        Parameters
+        ----------
+        firing_tras: list[Transition]
+        inv_arcs: list[Arc]
+
+        Returns
+        -------
+        None
+
+        """
         global step_num
         print("step_num=", step_num)
         assert firing_tras is not None
@@ -117,6 +242,21 @@ class PetriNet:
                        omit_unit_caps=False,
                        place_shape="circle",
                        num_grays=10):
+        """
+
+        Parameters
+        ----------
+        fname: str
+        inv_arcs: list[Arc]
+        omit_unit_caps: bool
+        place_shape: str
+        num_grays: int
+
+        Returns
+        -------
+        None
+
+        """
         with open(fname, "w") as f:
             str0 = "digraph G {\n"
             for arc in self.arcs:
@@ -126,24 +266,24 @@ class PetriNet:
                 inv = arc.inv
                 inv_str = ""
                 # if inv_arcs:
-                    # print("nmmjkkkkkkkkk",
-                    # [str(x) for x in inv_arcs], arc)
-                    # print(arc in inv_arcs)
+                # print("nmmjkkkkkkkkk",
+                # [str(x) for x in inv_arcs], arc)
+                # print(arc in inv_arcs)
                 if inv_arcs and (arc in inv_arcs):
                     # print("nmmjk-===============",arc.name_pair)
                     ar0, ar1 = ar1, ar0
                     inv = not inv
                     inv_str = ", arrowhead=inv"
                 cap_str = f"label={cap}"
-                if omit_unit_caps and cap==1:
+                if omit_unit_caps and cap == 1:
                     cap_str = ""
                 str0 += f"{ar0}->{ar1}[{cap_str}{inv_str}];\n"
             max_content = max([p.content for p in self.places])
             num_grays = max(max_content, num_grays)
             for p in self.places:
-                place_str = f"[shape={place_shape}," +\
-                          "style=filled," +\
-                          "fontcolor=red,"
+                place_str = f"[shape={place_shape}," + \
+                            "style=filled," + \
+                            "fontcolor=red,"
                 tone = get_gray_tone(p.content, num_grays)
                 str0 += p.name + place_str + \
                         f'fillcolor="{tone}", ' + \
@@ -155,6 +295,18 @@ class PetriNet:
 
     @staticmethod
     def read_dot_file(fname, verbose=False):
+        """
+
+        Parameters
+        ----------
+        fname: str
+        verbose: bool
+
+        Returns
+        -------
+        PetriNet
+
+        """
         places = []
         arcs = []
         tras = []
@@ -190,10 +342,10 @@ class PetriNet:
             out_arcs = []
             in_arcs = []
             for arc in arcs:
-                if arc.name_pair[0] in pnames and\
+                if arc.name_pair[0] in pnames and \
                         arc.name_pair[1] == tra_name:
                     in_arcs.append(arc)
-                elif arc.name_pair[1] in pnames and\
+                elif arc.name_pair[1] in pnames and \
                         arc.name_pair[0] == tra_name:
                     out_arcs.append(arc)
             tra = Transition(tra_name, in_arcs, out_arcs)
@@ -206,12 +358,29 @@ class PetriNet:
     def draw(self, jupyter,
              inv_arcs=None,
              omit_unit_caps=False,
-             place_shape="circle"):
+             place_shape="circle",
+             num_grays=10):
+        """
+
+        Parameters
+        ----------
+        jupyter: bool
+        inv_arcs: list[Arc]
+        omit_unit_caps: bool
+        place_shape: str
+        num_grays: int
+
+        Returns
+        -------
+        None
+
+        """
         fname = "tempo.txt"
         self.write_dot_file(fname,
                             inv_arcs=inv_arcs,
                             omit_unit_caps=omit_unit_caps,
-                            place_shape=place_shape)
+                            place_shape=place_shape,
+                            num_grays=num_grays)
         draw_dot_file(fname, jupyter=jupyter)
 
 
@@ -240,5 +409,7 @@ if __name__ == "__main__":
         print("\nread test:")
         pnet = PetriNet.read_dot_file(fname1, verbose=True)
         pnet.draw(jupyter=False)
+
+
     main1()
     main2()

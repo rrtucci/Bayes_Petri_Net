@@ -3,13 +3,40 @@ from utils import get_pa_to_descendants, draw_dot_file, get_label_value
 from PAT import *
 import os
 
+
 class BNetPetrifier:
+    """
+    Attributes
+    ----------
+    bnet_arrows: list[tuple[str, str]]
+    bnet_nds: list[str]
+    bnet_pa_to_children: dict[str, list[str]]
+    buffer_nd_to_content: dict[str, int|float]
+    buffer_nds: list[str]
+    cond_bnet_nds: list[str]
+    inv_petri_arrows: list[tuple[str, str]]
+    petri_arrow_to_capacity: dict[tuple[str, str], int]
+    petri_arrows: list[tuple[str, str]]
+    verbose: bool
+
+    """
+
     def __init__(self,
                  bnet_pa_to_children,
                  cond_bnet_nds=None,
                  buffer_nd_to_content=None,
                  petri_arrow_to_capacity=None,
                  verbose=False):
+        """
+
+        Parameters
+        ----------
+        bnet_pa_to_children: dict[str, list[str]]
+        cond_bnet_nds: list[str]
+        buffer_nd_to_content: dict[str, int|float]
+        petri_arrow_to_capacity: dict[tuple[str, str], int]
+        verbose: bool
+        """
         self.bnet_pa_to_children = bnet_pa_to_children
         self.cond_bnet_nds = cond_bnet_nds
         self.buffer_nd_to_content = buffer_nd_to_content
@@ -77,6 +104,17 @@ class BNetPetrifier:
                   self.petri_arrow_to_capacity)
 
     def get_PAT(self, verbose=False):
+        """
+
+        Parameters
+        ----------
+        verbose: bool
+
+        Returns
+        -------
+        list[Place], list[Arc], list[Transition]
+
+        """
         places = []
         for buffer_nd, content in self.buffer_nd_to_content.items():
             place = Place(buffer_nd, content)
@@ -111,6 +149,19 @@ class BNetPetrifier:
         return places, arcs, tras
 
     def nd2_is_collider(self, nd1, nd2, nd3):
+        """
+
+        Parameters
+        ----------
+        nd1: str
+        nd2: str
+        nd3: str
+
+        Returns
+        -------
+        bool
+
+        """
         if (nd1, nd2) in self.bnet_nds and \
                 (nd3, nd2) in self.bnet_nds:
             return True
@@ -118,6 +169,19 @@ class BNetPetrifier:
             return False
 
     def nd2_is_blocked(self, nd1, nd2, nd3):
+        """
+
+        Parameters
+        ----------
+        nd1: str
+        nd2: str
+        nd3: str
+
+        Returns
+        -------
+        bool
+
+        """
         blocked = True
         if self.nd2_is_collider(nd1, nd2, nd3):
             if nd2 in self.cond_bnet_nds:
@@ -138,6 +202,21 @@ class BNetPetrifier:
                        omit_unit_caps=False,
                        place_shape="circle",
                        num_grays=10):
+        """
+
+        Parameters
+        ----------
+        fname: str
+        omit_unit_caps: bool
+        place_shape: str
+        num_grays: int
+
+        Returns
+        -------
+        None
+
+        """
+
         def get_cap_inv_strings(petri_arrow):
             cap = self.petri_arrow_to_capacity[petri_arrow]
             # allow for possibility of decimal caps
@@ -169,9 +248,9 @@ class BNetPetrifier:
             for buffer_nd in self.buffer_nds:
                 str0 += f"{buffer_nd}["
                 str0 += f"shape={place_shape}, style=filled, fontcolor=red,"
-                content = self.buffer_nd_to_content[buffer_nd]
+                content = round(self.buffer_nd_to_content[buffer_nd])
                 tone = get_gray_tone(content, num_grays)
-                str0 += f'fillcolor="{tone}", label={content}];\n'
+                str0 += f'fillcolor="{tone}", label={content:.1f}];\n'
             for name in self.bnet_nds:
                 if self.cond_bnet_nds and name in self.cond_bnet_nds:
                     color_str = \
@@ -184,6 +263,18 @@ class BNetPetrifier:
 
     @staticmethod
     def read_dot_file(fname, verbose=False):
+        """
+
+        Parameters
+        ----------
+        fname: str
+        verbose: bool
+
+        Returns
+        -------
+        None
+
+        """
         bnet_pa_to_children = {}
         cond_bnet_nds = []
         buffer_nd_to_content = {}
@@ -231,11 +322,27 @@ class BNetPetrifier:
     def draw(self,
              jupyter,
              omit_unit_caps=False,
-             place_shape="circle"):
+             place_shape="circle",
+             num_grays=10):
+        """
+
+        Parameters
+        ----------
+        jupyter: bool
+        omit_unit_caps: bool
+        place_shape: str
+        num_grays: int
+
+        Returns
+        -------
+        None
+
+        """
         fname = "tempo.txt"
         self.write_dot_file(fname,
                             omit_unit_caps=omit_unit_caps,
-                            place_shape=place_shape)
+                            place_shape=place_shape,
+                            num_grays=num_grays)
         draw_dot_file(fname, jupyter=jupyter)
 
 
@@ -250,5 +357,6 @@ if __name__ == "__main__":
         petrifier.write_dot_file(fname1)
         petrifier = BNetPetrifier.read_dot_file(fname1, verbose=True)
         petrifier.draw(jupyter=False)
+
 
     main1()

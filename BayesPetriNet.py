@@ -4,6 +4,11 @@ import random
 
 
 class BayesPetriNet(PetriNet):
+    """
+    Attributes
+    ----------
+    petrifier: BNetPetrifier
+    """
 
     def __init__(self,
                  bnet_pa_to_children,
@@ -11,6 +16,16 @@ class BayesPetriNet(PetriNet):
                  buffer_nd_to_content=None,
                  petri_arrow_to_capacity=None,
                  verbose=False):
+        """
+
+        Parameters
+        ----------
+        bnet_pa_to_children: dict[str, list[str]]
+        cond_bnet_nds: list[str]
+        buffer_nd_to_content: dict[str, int|float]
+        petri_arrow_to_capacity: dict[tuple[str,str], int]
+        verbose: bool
+        """
         # petri_arrow_to_capacity = None
         # this will cause all capacities to be set to 1
         # by BNetPetrifier
@@ -23,7 +38,31 @@ class BayesPetriNet(PetriNet):
             verbose)
         super().__init__(*self.petrifier.get_PAT())
 
+    def refresh_petrifier_markings(self):
+        """
+
+        Returns
+        -------
+        None
+
+        """
+        for place in self.places:
+            self.petrifier.buffer_nd_to_content[place.name] = \
+                place.content
+
     def get_reacheable_out_arcs(self, tra, in_arc):
+        """
+
+        Parameters
+        ----------
+        tra: Transition
+        in_arc: Arc
+
+        Returns
+        -------
+        list[Arc]
+
+        """
         assert in_arc in tra.in_arcs
         nd1 = in_arc.name_pair[0].split("_")[0]
         nd2 = tra.name
@@ -35,6 +74,17 @@ class BayesPetriNet(PetriNet):
         return reachable_out_arcs
 
     def fire_transition(self, tra):
+        """
+
+        Parameters
+        ----------
+        tra: Transition
+
+        Returns
+        -------
+        None
+
+        """
         if not self.is_enabled(tra):
             print(f"Transition {tra.name} is not enabled!")
             return
@@ -52,11 +102,24 @@ class BayesPetriNet(PetriNet):
                         arc.name_pair[1])
                     out_place.content += in_arc.capacity / num_reachables
                 in_place.content -= in_arc.capacity
+        self.refresh_petrifier_markings()
         # self.describe_current_markings()
 
     def inner_step(self,
                    firing_tras,
                    inv_arcs=None):
+        """
+
+        Parameters
+        ----------
+        firing_tras: list[Transition]
+        inv_arcs: list[Arc]
+
+        Returns
+        -------
+        None
+
+        """
         global step_num
         print("step_num=", step_num)
         assert firing_tras is not None
@@ -69,25 +132,67 @@ class BayesPetriNet(PetriNet):
         self.petrifier.draw(jupyter=True)
         step_num += 1
 
-
     def write_dot_file(self,
                        fname,
                        inv_arcs=None,
                        omit_unit_caps=False,
                        place_shape="circle",
                        num_grays=10):
+        """
+
+        Parameters
+        ----------
+        fname: str
+        inv_arcs: list[Arc]
+        omit_unit_caps: bool
+        place_shape: str
+        num_grays: int
+
+        Returns
+        -------
+        None
+
+        """
         assert False, \
             "Use instead the method BNetPetrifier.write_dot_file()"
 
     @staticmethod
     def read_dot_file(fname, verbose=False):
+        """
+
+        Parameters
+        ----------
+        fname: str
+        verbose: bool
+
+        Returns
+        -------
+        BayesPetriNet
+
+        """
         assert False, \
             "Use instead the method BNetPetrifier.read_dot_file()"
 
     def draw(self, jupyter,
              inv_arcs=None,
              omit_unit_caps=False,
-             place_shape="circle"):
+             place_shape="circle",
+             num_grays=10):
+        """
+
+        Parameters
+        ----------
+        jupyter: bool
+        inv_arcs: list[Arc]
+        omit_unit_caps: bool
+        place_shape: str
+        num_grays: int
+
+        Returns
+        -------
+        None
+
+        """
         assert False, \
             "Use instead the method BNetPetrifier.draw()"
 
@@ -102,5 +207,6 @@ if __name__ == "__main__":
         bpnet.describe_current_markings()
         bpnet.fire_transition(tra)
         bpnet.describe_current_markings()
+
 
     main()
