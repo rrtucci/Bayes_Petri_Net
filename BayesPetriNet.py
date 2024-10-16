@@ -105,33 +105,6 @@ class BayesPetriNet(PetriNet):
         self.refresh_petrifier_markings()
         # self.describe_current_markings()
 
-    def inner_step(self,
-                   firing_tras,
-                   inv_arcs=None):
-        """
-
-        Parameters
-        ----------
-        firing_tras: list[Transition]
-        inv_arcs: list[Arc]
-
-        Returns
-        -------
-        None
-
-        """
-        global step_num
-        print("step_num=", step_num)
-        assert firing_tras is not None
-        if step_num > len(firing_tras):
-            return
-        if step_num != 0:
-            tra = firing_tras[step_num - 1]
-            self.fire_transition(tra)
-        self.describe_current_markings()
-        self.petrifier.draw(jupyter=True)
-        step_num += 1
-
     def write_dot_file(self,
                        fname,
                        inv_arcs=None,
