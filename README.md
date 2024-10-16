@@ -7,15 +7,15 @@ by the software in this repo using Graphviz. The solid arrows
 and uncircled nodes constitute a Bayesian Network
 whereas the dotted arrows are the **arcs**,
 the circled nodes are the **places**, and the
-uncicled nodes are the **transitions** of a **Petri Net**.
+uncircled nodes are the **transitions** of a **Petri Net**.
 The red numbers are the token contents of 
 the place nodes (note that
 we allow them to be fractional)*
 
 This software displays the
-evolution (on a Jupyter notebook) of a
-* conventional Petri Net
-* special
+evolution (on a Jupyter notebook) of
+* a conventional Petri Net
+* a special
 Petri Net that we call a **Bayes Petri Net** (BPN).
 
 With every **Bayesian Network** (BN),

@@ -261,8 +261,6 @@ class PetriNet:
             str0 = "digraph G {\n"
             for arc in self.arcs:
                 ar0, ar1 = arc.name_pair
-                # allow for possibility of decimal arrow capacities
-                cap = round(arc.capacity)
                 inv = arc.inv
                 inv_str = ""
                 # if inv_arcs:
@@ -274,7 +272,8 @@ class PetriNet:
                     ar0, ar1 = ar1, ar0
                     inv = not inv
                     inv_str = ", arrowhead=inv"
-                cap_str = f"label={cap}"
+                cap = arc.capacity
+                cap_str = f"label={cap:.3f}"
                 if omit_unit_caps and cap == 1:
                     cap_str = ""
                 str0 += f"{ar0}->{ar1}[{cap_str}{inv_str}];\n"

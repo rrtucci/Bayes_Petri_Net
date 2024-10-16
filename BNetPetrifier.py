@@ -219,8 +219,6 @@ class BNetPetrifier:
 
         def get_cap_inv_strings(petri_arrow):
             cap = self.petri_arrow_to_capacity[petri_arrow]
-            # allow for possibility of decimal caps
-            cap = round(cap)
             if omit_unit_caps and cap == 1:
                 cap_str = ""
             else:
@@ -248,8 +246,8 @@ class BNetPetrifier:
             for buffer_nd in self.buffer_nds:
                 str0 += f"{buffer_nd}["
                 str0 += f"shape={place_shape}, style=filled, fontcolor=red,"
-                content = round(self.buffer_nd_to_content[buffer_nd])
-                tone = get_gray_tone(content, num_grays)
+                content = self.buffer_nd_to_content[buffer_nd]
+                tone = get_gray_tone(round(content), num_grays)
                 str0 += f'fillcolor="{tone}", label={content:.1f}];\n'
             for name in self.bnet_nds:
                 if self.cond_bnet_nds and name in self.cond_bnet_nds:
