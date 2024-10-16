@@ -153,8 +153,11 @@ class BayesPetriNet(PetriNet):
         None
 
         """
-        assert False, \
-            "Use instead the method BNetPetrifier.write_dot_file()"
+        self.petrifier.write_dot_file(
+            fname=fname,
+            omit_unit_caps=omit_unit_caps,
+            place_shape=place_shape,
+            num_grays=num_grays)
 
     @staticmethod
     def read_dot_file(fname, verbose=False):
@@ -170,8 +173,7 @@ class BayesPetriNet(PetriNet):
         BayesPetriNet
 
         """
-        assert False, \
-            "Use instead the method BNetPetrifier.read_dot_file()"
+        BNetPetrifier.read_dot_file(fname=fname, verbose=verbose)
 
     def draw(self, jupyter,
              inv_arcs=None,
@@ -193,11 +195,14 @@ class BayesPetriNet(PetriNet):
         None
 
         """
-        assert False, \
-            "Use instead the method BNetPetrifier.draw()"
-
+        self.petrifier.draw(
+            jupyter=jupyter,
+            omit_unit_caps=omit_unit_caps,
+            place_shape=place_shape,
+            num_grays=num_grays)
 
 if __name__ == "__main__":
+
     def main():
         bnet_pa_to_children = {"a": ["b", "c"],
                                "b": ["c", "d"],
@@ -207,6 +212,5 @@ if __name__ == "__main__":
         bpnet.describe_current_markings()
         bpnet.fire_transition(tra)
         bpnet.describe_current_markings()
-
 
     main()
