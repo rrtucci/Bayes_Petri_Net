@@ -5,13 +5,16 @@ from PAT import *
 
 class PetriNet:
     """
+    This class defines a conventional Petri Net.
 
     Attributes
     ----------
     arcs: list[Arc]
     places: list[Place]
     step_num: int
+        step number
     tras: list[Transition]
+        A list of Transitions.
     """
     global step_num
     step_num = 0
@@ -53,6 +56,7 @@ class PetriNet:
 
     def get_place_from_name(self, name):
         """
+        This method returns the place object associated with the name `name`.
 
         Parameters
         ----------
@@ -70,6 +74,8 @@ class PetriNet:
 
     def get_arc_from_name_pair(self, name_pair):
         """
+        This method returns the arc object associated with the name pair
+        `name_pair`.
 
         Parameters
         ----------
@@ -87,6 +93,8 @@ class PetriNet:
 
     def get_arcs_from_name_pairs(self, name_pairs):
         """
+        This method returns a list of arc objects associated with a list of
+        name pairs `name_pair`.
 
         Parameters
         ----------
@@ -105,6 +113,8 @@ class PetriNet:
 
     def get_tra_from_name(self, name):
         """
+        This method returns the transition object associated with the name
+        `name`.
 
         Parameters
         ----------
@@ -122,6 +132,8 @@ class PetriNet:
 
     def get_firing_tras_from_names(self, names):
         """
+        This method returns a list of transition objects associated with a
+        list of names `names`.
 
         Parameters
         ----------
@@ -136,6 +148,9 @@ class PetriNet:
 
     def is_enabled(self, tra):
         """
+        This method returns True iff the transition `tra` is enabled (i.e.,
+        for every one of its input arcs, the place node has at least as much
+        content as the capacity of the arc.)
 
         Parameters
         ----------
@@ -154,6 +169,7 @@ class PetriNet:
 
     def describe_current_markings(self):
         """
+        This method prints out a list of places and their contents.
 
         Returns
         -------
@@ -165,6 +181,7 @@ class PetriNet:
 
     def fire_transition(self, tra):
         """
+        This method fires the transition `tra`.
 
         Parameters
         ----------
@@ -195,6 +212,7 @@ class PetriNet:
 
     def fire_transition_list(self, firing_tras):
         """
+        This method fires the list of transitions `firing_tras`.
 
         Parameters
         ----------
@@ -213,11 +231,14 @@ class PetriNet:
                    firing_tras,
                    inv_arcs=None):
         """
+        This method is called internally by widget_utils.create_step_button().
 
         Parameters
         ----------
         firing_tras: list[Transition]
+            list of transitions to be fired.
         inv_arcs: list[Arc]
+            list of arcs to be inverted (i.e., drawn with reversed arrowheads)
 
         Returns
         -------
@@ -243,14 +264,22 @@ class PetriNet:
                        place_shape="circle",
                        num_grays=10):
         """
+        This method writes a graphviz DOT file named `fname`
 
         Parameters
         ----------
         fname: str
         inv_arcs: list[Arc]
+            arcs to be drawn with arrowhead=inv
         omit_unit_caps: bool
+            this to True iff arrow capacities equal to 1 are not drawn
         place_shape: str
+            This is usually set to "circle". Set this equal to the name of
+            the shape of a node.
         num_grays: int
+            number of gray tones. It defaults to 10. `num_grays` will be
+            increased if more than 10 numbers are required to cover the full
+            range of the contents of the place nodes.
 
         Returns
         -------
@@ -291,10 +320,11 @@ class PetriNet:
                 str0 += tra.name + "[shape=none];\n"
             str0 += "}"
             f.write(str0)
-
     @staticmethod
     def read_dot_file(fname, verbose=False):
         """
+        This method reads a graphviz DOT file named `fname` and it returns
+        an object of class PetriNet.
 
         Parameters
         ----------
@@ -360,6 +390,7 @@ class PetriNet:
              place_shape="circle",
              num_grays=10):
         """
+        This method draws self via graphviz.
 
         Parameters
         ----------

@@ -6,17 +6,51 @@ import os
 
 class BNetPetrifier:
     """
+    This class defines a Bayesian Net (bnet) Petrifier. It provides methods
+    that allow one to "petrify" a bnet (i.e., construct a Bayes Petri net
+    from it).
+
+    Every node is specified by a string, its name. And every arrow is
+    specified by a pair of strings; the arrow points from the first to the
+    second string of the pair.
+
+    We will use the term "buffer" to signify
+    just the name of a Place. We will use the term "arrow" to signify just
+    the name_pair of an Arc.
+
+    The arrows of the bnet (`bnet_arrows`) are represented by solid lines
+    and those of the Petri Net (`petri_arrows`) by dotted lines.
+
     Attributes
     ----------
     bnet_arrows: list[tuple[str, str]]
+        list of arrows in the bnet
     bnet_nds: list[str]
+        list of nodes in the bnet
     bnet_pa_to_children: dict[str, list[str]]
+        for the bnet, a dictionary mapping each of the nodes of the bnet to
+        a list of its children. If a node has no childen, it is assigned an
+        empty list for the children.
     buffer_nd_to_content: dict[str, int|float]
+        dictionary mapping buffer node (place.name) to its content (
+        pace.content).
     buffer_nds: list[str]
+        list of buffer nodes
     cond_bnet_nds: list[str]
+        list of bnet nodes that are conditioned on. Conditioned nodes play a
+        crucial role in Pearl's d-separation rules from which the transition
+        firing rules will be defined. Conditioned nodes are indicated by
+        this software by a solid yellow circle containing the name of a bnet
+        node.
     inv_petri_arrows: list[tuple[str, str]]
+        list of Petri arrows that will be drawn in the inv style (with
+        reversed arrowheads). The inv arrows are determined internally,
+        not by the user. They are the arrows that travel opposite (upstream)
+        to their corresponding net arrow.
     petri_arrow_to_capacity: dict[tuple[str, str], int]
+        dictionary mapping every Petri arrow to its capacity
     petri_arrows: list[tuple[str, str]]
+        list of all Petri arrows
     verbose: bool
 
     """
@@ -105,6 +139,9 @@ class BNetPetrifier:
 
     def get_PAT(self, verbose=False):
         """
+        This method returns the PAT (triple (places, arcs, transitions)) of
+        self.
+
 
         Parameters
         ----------
@@ -150,6 +187,8 @@ class BNetPetrifier:
 
     def nd2_is_collider(self, nd1, nd2, nd3):
         """
+        This method returns True iff node nd2 ia a collider between node nd1
+        and node nd3.
 
         Parameters
         ----------
@@ -170,6 +209,10 @@ class BNetPetrifier:
 
     def nd2_is_blocked(self, nd1, nd2, nd3):
         """
+        This method returns True iff node nd2 is blocked between node nd1
+        and node nd3. The definition of when a node is blocked is determined
+        by Pearl's rules of d-separation.
+
 
         Parameters
         ----------
@@ -203,20 +246,26 @@ class BNetPetrifier:
                        place_shape="circle",
                        num_grays=10):
         """
+        This method writes a graphviz DOT file named `fname`.
 
         Parameters
         ----------
         fname: str
         omit_unit_caps: bool
+            this to True iff arrow capacities equal to 1 are not drawn
         place_shape: str
+            This is usually set to "circle". Set this equal to the name of
+            the shape of a node.
         num_grays: int
+            number of gray tones. It defaults to 10. `num_grays` will be
+            increased if more than 10 numbers are required to cover the full
+            range of the contents of the place nodes.
 
         Returns
         -------
         None
 
         """
-
         def get_cap_inv_strings(petri_arrow):
             cap = self.petri_arrow_to_capacity[petri_arrow]
             if omit_unit_caps and cap == 1:
@@ -262,6 +311,8 @@ class BNetPetrifier:
     @staticmethod
     def read_dot_file(fname, verbose=False):
         """
+        This method reads a graphviz DOT file named `fname` and it returns
+        an object of class BNetPetrifier.
 
         Parameters
         ----------
@@ -323,6 +374,7 @@ class BNetPetrifier:
              place_shape="circle",
              num_grays=10):
         """
+        This method draws self via graphviz.
 
         Parameters
         ----------

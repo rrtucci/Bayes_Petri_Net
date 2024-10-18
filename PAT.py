@@ -1,14 +1,18 @@
 class Place:
     """
+    This class defines a place node of a Petri net.
 
     Attributes
     ----------
     content: int|float
+        a.k.a. the number of tokens or markings. Note that we will allow
+        fractional tokens.
     name: str
 
     """
     def __init__(self, name, content):
         """
+        Constructor
 
         Parameters
         ----------
@@ -20,6 +24,7 @@ class Place:
 
     def __str__(self):
         """
+        Magic method that returns a string describing the place node.
 
         Returns
         -------
@@ -31,15 +36,35 @@ class Place:
 
 class Arc:
     """
+    This class defines an arc of a Petri net.
+
+
     Attributes
     ----------
     capacity: int
+        This is the maximum amount of juice that can flow through the arrow
+        in one step (step= firing of one transition)
     inv: bool
+        If inv=False and name_pair=('a', 'b'), then the arrow is drawn by
+        graphviz pointing from node 'a' to node 'b' and with a standard
+        arrowhead. If inv=True and name_pair=('b', 'a'), then the arrow is
+        drawn by graphviz pointing from node 'b' to node 'a' and with an
+        inverted arrowhead. Both cases are defined to be physically
+        identical but are drawn differently by graphviz. We normally ask
+        graphviz to draw feedback arrows that point from the present to the
+        past in the inverted style. Usng the inverted style for feedback
+        arrows yields more pleasing drawings because graphviz by default
+        orders the nodes in chronological (i.e. topological order with time
+        pointing from top to bottom.
     name_pair: tuple[str, str]
+        we will refer to this string pair as an "arrow" pointing from the
+        first string to the second. The arrow may point from a place node to
+        a transition node or vice versa.
 
     """
     def __init__(self, name_pair, capacity, inv):
         """
+        Constructor
 
         Parameters
         ----------
@@ -55,6 +80,7 @@ class Arc:
 
     def __str__(self):
         """
+        Magic method that returns a string describing an arc.
 
         Returns
         -------
@@ -65,6 +91,9 @@ class Arc:
 
     def __eq__(self, other):
         """
+        Magic method that returns True iff two arcs (self and other) are
+        equal in the sense they have equal attributes name_pair, capacity,
+        inv. This method is used in bool statements like `arc in arcs`
 
         Parameters
         ----------
@@ -81,6 +110,10 @@ class Arc:
 
     def reverse(self):
         """
+        This method "reverses" an arc by replacing inv by its negation and
+        name_pair by its reverse. Both the new and the old arcs are defined
+        to be physically the same but drawn in a different style,
+        with different arrowheads.
 
         Returns
         -------
@@ -93,11 +126,17 @@ class Arc:
 
 class Transition:
     """
+    This class defines a transition of a Petri net.
+
+
     Attributes
     ----------
     in_arcs: list[Arc]
+        list of arcs entering self
     name: str
     out_arcs: list[Arc]
+        list of arcs exiting self
+
 
     """
     def __init__(self,
@@ -105,6 +144,7 @@ class Transition:
                  in_arcs,
                  out_arcs):
         """
+        Constructor
 
         Parameters
         ----------
@@ -118,6 +158,7 @@ class Transition:
 
     def describe_self(self):
         """
+        This method prints a description of all the attributes of self.
 
         Returns
         -------
@@ -135,6 +176,9 @@ class Transition:
 
 def describe_PAT(places, arcs, tras):
     """
+    This global method describes a PAT (i.e., places, arcs and transitions).
+    Petri nets are defined by a PAT. Note that we will often abbreviate the
+    longish word "transition" by a simple "tra".
 
     Parameters
     ----------

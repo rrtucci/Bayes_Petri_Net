@@ -1,10 +1,18 @@
 from PetriNet import *
 from BNetPetrifier import *
-import random
 
 
 class BayesPetriNet(PetriNet):
     """
+    This class defines a Bayes Petri Net.
+
+    Note that even though this is a subclass of PetriNet, the parameters of
+    its __init__ constructor are not those of the __init__ of PetriNet.
+    Instead, they are the same as those of the __init__ of BNetPetrifier.
+    The __init__ of this class uses its input parameters to immediately
+    create self.petrifier.
+
+
     Attributes
     ----------
     petrifier: BNetPetrifier
@@ -17,6 +25,8 @@ class BayesPetriNet(PetriNet):
                  petri_arrow_to_capacity=None,
                  verbose=False):
         """
+        Constructor. See input parameter of the __init__ of BnetPetrifier
+        which are the same as those for this __init__.
 
         Parameters
         ----------
@@ -40,6 +50,9 @@ class BayesPetriNet(PetriNet):
 
     def refresh_petrifier_markings(self):
         """
+        This method refreshes the markings of self.petrifier. It is used
+        whenever only the markings (i.e., place.content) of the self.places
+        have changed.
 
         Returns
         -------
@@ -52,6 +65,10 @@ class BayesPetriNet(PetriNet):
 
     def get_reacheable_out_arcs(self, tra, in_arc):
         """
+        This method returns a list of the reacheable outgoing arcs for a
+        given transition `tra` and an in arc `in_arc`. An outgoing arc is
+        reacheable if it is not blocked, judging by Pearl's rules for
+        d-separation.
 
         Parameters
         ----------
@@ -75,6 +92,8 @@ class BayesPetriNet(PetriNet):
 
     def fire_transition(self, tra):
         """
+        This method pperforms a single "step"; i.e., it fires a single
+        transition node `tra`.
 
         Parameters
         ----------
@@ -112,6 +131,12 @@ class BayesPetriNet(PetriNet):
                        place_shape="circle",
                        num_grays=10):
         """
+        This method just calls self.petrifier.write_dot_file(). It overrides
+        the method of the same name in the parent class PetriNet.
+
+        If you input something other than None for the parameter `inv_arcs`,
+        it won't be used as the inv arcs of a Bayes Petri Net are determined
+        by the program, not inputed by the user as they are in PetriNet.
 
         Parameters
         ----------
@@ -135,6 +160,10 @@ class BayesPetriNet(PetriNet):
     @staticmethod
     def read_dot_file(fname, verbose=False):
         """
+        This method just calls self.petrifier.read_dot_file().  It overrides
+        the method of the same name in the parent class PetriNet,
+        but instead of returning a  PetriNet object, it returns a
+        BayesPetriNet object.
 
         Parameters
         ----------
@@ -154,6 +183,12 @@ class BayesPetriNet(PetriNet):
              place_shape="circle",
              num_grays=10):
         """
+        This method just calls self.petrifier.draw(). It overrides the
+        method of the same name in the parent class PetriNet.
+
+        If you input something other than None for the parameter `inv_arcs`,
+        it won't be used as the inv arcs of a Bayes Petri Net are determined
+        by the program, not inputed by the user as they are in PetriNet.
 
         Parameters
         ----------

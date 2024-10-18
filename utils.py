@@ -9,16 +9,22 @@ import os
 
 def get_gray_tone(i, num_grays=10):
     """
+    This method returns a str of a hex number for a tone of gray.
 
     Parameters
     ----------
     num_grays: int
+        number of gray tones. It defaults to 10. `num_grays` will be
+        increased if more than 10 numbers are required to cover the full
+        range of the contents of the place nodes.
     i: int
+        some int in the range {0, 1, ..., num_grays-1}. i=0 is for white and
+        i=num_grays-1 is for black.
 
     Returns
     -------
     str
-        string of a hex number like '#ffffff' (white) or '#000000' (black)
+        A string of a hex number like '#ffffff' (white) or '#000000' (black)
 
     """
     if i < 0 or i >= num_grays:
@@ -30,10 +36,13 @@ def get_gray_tone(i, num_grays=10):
 
 def get_label_value(str0):
     """
+    This method finds a substring of the form `label=-58` (or some other int
+    besides -58), within the string `str0` and returns the integer `-58`.
 
     Parameters
     ----------
     str0: str
+        string which contains substring `label=-58`
 
     Returns
     -------
@@ -49,10 +58,10 @@ def get_label_value(str0):
 
 def draw_dot_file(dot_file_path, jupyter=True):
     """
-    This method uses graphviz to draw_dot_file the dot file located at
-    dot_file_path. It creates a temporary file called tempo.png with a
-    png of the dot file. If jupyter=True, it embeds the png in a jupyter
-    notebook. If jupyter=False, it opens a window showing the png.
+    This method uses graphviz to draw the dot file located at dot_file_path.
+    It creates a temporary file called tempo.png with a png of the dot file.
+    If jupyter=True, it embeds the png in a jupyter notebook. If
+    jupyter=False, it opens a window showing the png.
 
     Parameters
     ----------
@@ -80,56 +89,64 @@ def draw_dot_file(dot_file_path, jupyter=True):
         open_image("tempo123.png").show()
 
 
-def get_pa_to_descendants(parent_to_children):
+def get_pa_to_descendants(pa_to_children):
     """
+    This method returns a dictionary `pa_to_descendants` that maps each
+    parent node to a list of all its descendant nodes, given as input a
+    dictionary `pa_to_children` which maps each parent node to a list of all
+    its children nodes. Every node is specified by a str, its name.
 
     Parameters
     ----------
-    parent_to_children: dict[str, list[str]]
+    pa_to_children: dict[str, list[str]]
 
     Returns
     -------
     dict[str, list[str]]
     """
     # Dictionary to store the result: parent -> descendants
-    parent_to_descendants = {}
+    pa_to_descendants = {}
 
     # Helper function for depth-first search (DFS)
     def dfs(node):
         # If the node has no children, return an empty set
-        if node not in parent_to_children:
+        if node not in pa_to_children:
             return set()
 
         # If we already computed the descendants for this node,
         # return it
-        if node in parent_to_descendants:
-            return parent_to_descendants[node]
+        if node in pa_to_descendants:
+            return pa_to_descendants[node]
 
         # Get the direct children of the current node
-        descendants = set(parent_to_children.get(node, []))
+        descendants = set(pa_to_children.get(node, []))
 
         # Recursively add the descendants of each child
-        for child in parent_to_children.get(node, []):
+        for child in pa_to_children.get(node, []):
             descendants.update(dfs(child))
 
         # Cache the result for the current node
-        parent_to_descendants[node] = list(descendants)
+        pa_to_descendants[node] = list(descendants)
         return descendants
 
     # Run DFS for each parent in the DAG
-    for parent in parent_to_children:
+    for parent in pa_to_children:
         dfs(parent)
 
-    return parent_to_descendants
+    return pa_to_descendants
 
 
-def complete_dict(dictio, all_keys, default_val):
+def complete_dict(dictio, new_keys, default_val):
     """
+    This method takes in a dictionary `dictio` and adds to it new keys
+    `new_keys` with the value `default_val`. The new dictionary is returned.
+    If some of the new keys are already present in dictio, it replaces their
+    values by the default value.
 
     Parameters
     ----------
     dictio: dict[str, list[int]]
-    all_keys: list[str]
+    new_keys: list[str]
     default_val: int
 
     Returns
@@ -139,10 +156,10 @@ def complete_dict(dictio, all_keys, default_val):
     """
     if not dictio:
         dictio = {}
-        for key in all_keys:
+        for key in new_keys:
             dictio[key] = default_val
     else:
-        for key in all_keys:
+        for key in new_keys:
             if key not in dictio:
                 dictio[key] = default_val
     return dictio
@@ -150,6 +167,8 @@ def complete_dict(dictio, all_keys, default_val):
 
 def reverse_pair(x):
     """
+    This function takes an input like x=("a", "b) and returns its reverse (
+    "b", "a").
 
     Parameters
     ----------
