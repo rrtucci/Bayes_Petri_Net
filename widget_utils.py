@@ -5,9 +5,9 @@ from IPython.display import display, clear_output
 def create_step_button(refresh, inner_step, **kwargs):
     """
     This function creates a button labelled "step" in a jupyter notebook.
-    Clicking on the button advances executes the code contained in the
-    function `inner_state`. The `inner_state` function is one of the input
-    parameters. `refresh=True` erases the output cell between steps, whereas
+    Clicking on the button executes the code contained in the function
+    `inner_step`. The `inner_step` function is one of the input parameters.
+    `refresh=True` erases the output cell between steps, whereas
     `refresh=False` appends any new output to the output already existing in
     the output cell.
 

@@ -52,10 +52,10 @@ class Arc:
         inverted arrowhead. Both cases are defined to be physically
         identical but are drawn differently by graphviz. We normally ask
         graphviz to draw feedback arrows that point from the present to the
-        past in the inverted style. Usng the inverted style for feedback
-        arrows yields more pleasing drawings because graphviz by default
-        orders the nodes in chronological (i.e. topological order with time
-        pointing from top to bottom.
+        past in the inverted arrowhead style. Using the inverted style for
+        feedback arrows yields more pleasing drawings because graphviz by
+        default orders the nodes in chronological (i.e. topological order,
+        with time pointing from top to bottom.
     name_pair: tuple[str, str]
         we will refer to this string pair as an "arrow" pointing from the
         first string to the second. The arrow may point from a place node to
@@ -178,7 +178,7 @@ def describe_PAT(places, arcs, tras):
     """
     This global method describes a PAT (i.e., places, arcs and transitions).
     Petri nets are defined by a PAT. Note that we will often abbreviate the
-    longish word "transition" by a simple "tra".
+    longish word "transition" by the abridged word "tra".
 
     Parameters
     ----------

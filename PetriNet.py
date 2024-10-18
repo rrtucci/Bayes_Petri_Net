@@ -56,7 +56,7 @@ class PetriNet:
 
     def get_place_from_name(self, name):
         """
-        This method returns the place object associated with the name `name`.
+        This method returns the Place object associated with the name `name`.
 
         Parameters
         ----------
@@ -74,7 +74,7 @@ class PetriNet:
 
     def get_arc_from_name_pair(self, name_pair):
         """
-        This method returns the arc object associated with the name pair
+        This method returns the Arc object associated with the name pair
         `name_pair`.
 
         Parameters
@@ -93,7 +93,7 @@ class PetriNet:
 
     def get_arcs_from_name_pairs(self, name_pairs):
         """
-        This method returns a list of arc objects associated with a list of
+        This method returns the list of Arc objects associated with a list of
         name pairs `name_pair`.
 
         Parameters
@@ -113,7 +113,7 @@ class PetriNet:
 
     def get_tra_from_name(self, name):
         """
-        This method returns the transition object associated with the name
+        This method returns the Transition object associated with the name
         `name`.
 
         Parameters
@@ -132,7 +132,7 @@ class PetriNet:
 
     def get_firing_tras_from_names(self, names):
         """
-        This method returns a list of transition objects associated with a
+        This method returns the list of Transition objects associated with a
         list of names `names`.
 
         Parameters
@@ -169,7 +169,7 @@ class PetriNet:
 
     def describe_current_markings(self):
         """
-        This method prints out a list of places and their contents.
+        This method prints out a list of all the places and their contents.
 
         Returns
         -------
@@ -320,11 +320,12 @@ class PetriNet:
                 str0 += tra.name + "[shape=none];\n"
             str0 += "}"
             f.write(str0)
+
     @staticmethod
     def read_dot_file(fname, verbose=False):
         """
         This method reads a graphviz DOT file named `fname` and it returns
-        an object of class PetriNet.
+        a PetriNet object.
 
         Parameters
         ----------

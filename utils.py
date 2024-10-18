@@ -31,7 +31,7 @@ def get_gray_tone(i, num_grays=10):
         raise ValueError("i should be in the range [0, num_grays]")
     tone_value = int((num_grays - i - 1) * 255 / (num_grays - 1))
     hex_value = f"{tone_value:02x}"  # Convert to 2-digit hex
-    return f"#{hex_value}{hex_value}{hex_value}"  # Return the gray color
+    return f"#{hex_value}{hex_value}{hex_value}"
 
 
 def get_label_value(str0):
@@ -58,10 +58,10 @@ def get_label_value(str0):
 
 def draw_dot_file(dot_file_path, jupyter=True):
     """
-    This method uses graphviz to draw the dot file located at dot_file_path.
-    It creates a temporary file called tempo.png with a png of the dot file.
-    If jupyter=True, it embeds the png in a jupyter notebook. If
-    jupyter=False, it opens a window showing the png.
+    This method uses graphviz to draw the dot file located at
+    `dot_file_path`. It creates a temporary file called `tempo.png` with a
+    png of the dot file. If jupyter=True, it embeds the png in a jupyter
+    notebook. If jupyter=False, it opens a window showing the png.
 
     Parameters
     ----------
@@ -94,7 +94,7 @@ def get_pa_to_descendants(pa_to_children):
     This method returns a dictionary `pa_to_descendants` that maps each
     parent node to a list of all its descendant nodes, given as input a
     dictionary `pa_to_children` which maps each parent node to a list of all
-    its children nodes. Every node is specified by a str, its name.
+    its children nodes. Every node is specified by the str which is its name.
 
     Parameters
     ----------
@@ -140,7 +140,7 @@ def complete_dict(dictio, new_keys, default_val):
     """
     This method takes in a dictionary `dictio` and adds to it new keys
     `new_keys` with the value `default_val`. The new dictionary is returned.
-    If some of the new keys are already present in dictio, it replaces their
+    If some of the new_keys are already present in dictio, it replaces their
     values by the default value.
 
     Parameters

@@ -6,11 +6,11 @@ class BayesPetriNet(PetriNet):
     """
     This class defines a Bayes Petri Net.
 
-    Note that even though this is a subclass of PetriNet, the parameters of
-    its __init__ constructor are not those of the __init__ of PetriNet.
-    Instead, they are the same as those of the __init__ of BNetPetrifier.
-    The __init__ of this class uses its input parameters to immediately
-    create self.petrifier.
+    Note that even though this is a subclass of PetriNet, the parameters of 
+    its __init__ constructor are not the same as those of the __init__ of 
+    PetriNet. Instead, they are the same as those of the __init__ of 
+    BNetPetrifier. The __init__ of this class uses its input parameters to 
+    immediately create self.petrifier.
 
 
     Attributes
@@ -51,8 +51,9 @@ class BayesPetriNet(PetriNet):
     def refresh_petrifier_markings(self):
         """
         This method refreshes the markings of self.petrifier. It is used
-        whenever only the markings (i.e., place.content) of the self.places
-        have changed.
+        whenever the markings (i.e., self.place.content) of the self.places
+        have changed but its equivalents in self.petrifier haven't been
+        changed yet.
 
         Returns
         -------
@@ -63,11 +64,11 @@ class BayesPetriNet(PetriNet):
             self.petrifier.buffer_nd_to_content[place.name] = \
                 place.content
 
-    def get_reacheable_out_arcs(self, tra, in_arc):
+    def get_reachable_out_arcs(self, tra, in_arc):
         """
-        This method returns a list of the reacheable outgoing arcs for a
+        This method returns a list of the reachable outgoing arcs for a
         given transition `tra` and an in arc `in_arc`. An outgoing arc is
-        reacheable if it is not blocked, judging by Pearl's rules for
+        reachable if it is not blocked, judging by Pearl's rules for
         d-separation.
 
         Parameters
@@ -92,7 +93,7 @@ class BayesPetriNet(PetriNet):
 
     def fire_transition(self, tra):
         """
-        This method pperforms a single "step"; i.e., it fires a single
+        This method performs a single "step"; i.e., it fires a single
         transition node `tra`.
 
         Parameters
@@ -111,7 +112,7 @@ class BayesPetriNet(PetriNet):
             print(f"Fired transition {tra.name}.")
 
         for in_arc in tra.in_arcs:
-            reachable_out_arcs = self.get_reacheable_out_arcs(tra, in_arc)
+            reachable_out_arcs = self.get_reachable_out_arcs(tra, in_arc)
             num_reachables = len(reachable_out_arcs)
             in_place = self.get_place_from_name(
                 in_arc.name_pair[0])
@@ -162,7 +163,7 @@ class BayesPetriNet(PetriNet):
         """
         This method just calls self.petrifier.read_dot_file().  It overrides
         the method of the same name in the parent class PetriNet,
-        but instead of returning a  PetriNet object, it returns a
+        but instead of returning a PetriNet object, it returns a
         BayesPetriNet object.
 
         Parameters
@@ -187,8 +188,9 @@ class BayesPetriNet(PetriNet):
         method of the same name in the parent class PetriNet.
 
         If you input something other than None for the parameter `inv_arcs`,
-        it won't be used as the inv arcs of a Bayes Petri Net are determined
-        by the program, not inputed by the user as they are in PetriNet.
+        it won't be used at all because the inv arcs of a Bayes Petri Net
+        are determined by the program, not inputed by the user as they are
+        in a PetriNet.
 
         Parameters
         ----------
