@@ -146,26 +146,37 @@ class PetriNet:
         """
         return [self.get_tra_from_name(name) for name in names]
 
-    def is_enabled(self, tra):
+    def is_enabled(self, tra, in_arc=None):
         """
-        This method returns True iff the transition `tra` is enabled (i.e.,
-        for every one of its input arcs, the place node has at least as much
-        content as the capacity of the arc.)
+        When in_arc=None, this method returns True iff the transition `tra`
+        is enabled (i.e., for every one of its input arcs, the place node
+        has at least as much content as the capacity of the arc.)
+
+        When in_arc is in tra.in_arcs, this method checks that the place
+        node for in_arc has at least as much content as the capacity of in_arc.
 
         Parameters
         ----------
         tra: Transition
+        in_arc: Arc
 
         Returns
         -------
         bool
 
         """
-        for arc in tra.in_arcs:
-            in_place = self.get_place_from_name(arc.name_pair[0])
-            if arc.capacity > in_place.content:
+        if in_arc and in_arc in tra.in_arcs:
+            in_place = self.get_place_from_name(in_arc.name_pair[0])
+            if in_arc.capacity > in_place.content:
                 return False
-        return True
+            else:
+                return True
+        else:
+            for arc in tra.in_arcs:
+                in_place = self.get_place_from_name(arc.name_pair[0])
+                if arc.capacity > in_place.content:
+                    return False
+            return True
 
     def describe_current_markings(self):
         """
@@ -185,24 +196,25 @@ class PetriNet:
 
         Parameters
         ----------
-        tra; Transition
+        tra: Transition
 
         Returns
         -------
         None
 
         """
-        if not self.is_enabled(tra):
-            print(f"Transition {tra.name} is not enabled!")
+        check_fully_enabled = True
+        if check_fully_enabled and not self.is_enabled(tra):
+            print(f"Transition {tra.name} is not fully enabled!")
             return
-        else:
-            print(f"Fired transition {tra.name}.")
+        print(f"Fired transition {tra.name}.")
         # print("==========", tra.name)
         # self.describe_current_markings()
         for arc in tra.in_arcs:
-            # print("====in arc=", arc)
-            in_place = self.get_place_from_name(arc.name_pair[0])
-            in_place.content -= arc.capacity
+            if self.is_enabled(tra, arc):
+                # print("====in arc=", arc)
+                in_place = self.get_place_from_name(arc.name_pair[0])
+                in_place.content -= arc.capacity
 
         for arc in tra.out_arcs:
             # print("====out arc=", arc)
@@ -225,7 +237,6 @@ class PetriNet:
         """
         for tra in firing_tras:
             self.fire_transition(tra)
-        self.describe_current_markings()
 
     def inner_step(self,
                    firing_tras,

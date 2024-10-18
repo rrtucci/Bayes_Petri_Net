@@ -105,23 +105,29 @@ class BayesPetriNet(PetriNet):
         None
 
         """
-        if not self.is_enabled(tra):
-            print(f"Transition {tra.name} is not enabled!")
+        check_fully_enabled = False
+        if check_fully_enabled and not self.is_enabled(tra):
+            print(f"Transition {tra.name} is not fully enabled!")
             return
         else:
             print(f"Fired transition {tra.name}.")
 
         for in_arc in tra.in_arcs:
-            reachable_out_arcs = self.get_reachable_out_arcs(tra, in_arc)
-            num_reachables = len(reachable_out_arcs)
-            in_place = self.get_place_from_name(
-                in_arc.name_pair[0])
-            if reachable_out_arcs:
-                for arc in reachable_out_arcs:
-                    out_place = self.get_place_from_name(
-                        arc.name_pair[1])
-                    out_place.content += in_arc.capacity / num_reachables
-                in_place.content -= in_arc.capacity
+            if not self.is_enabled(tra, in_arc):
+                pass
+            else:
+                reachable_out_arcs =\
+                    self.get_reachable_out_arcs(tra, in_arc)
+                num_reachables = len(reachable_out_arcs)
+                in_place = self.get_place_from_name(
+                    in_arc.name_pair[0])
+                if reachable_out_arcs and self.is_enabled(tra, in_arc):
+                    for arc in reachable_out_arcs:
+                        out_place = self.get_place_from_name(
+                            arc.name_pair[1])
+                        out_place.content += \
+                            in_arc.capacity / num_reachables
+                    in_place.content -= in_arc.capacity
         self.refresh_petrifier_markings()
         # self.describe_current_markings()
 
