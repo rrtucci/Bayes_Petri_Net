@@ -302,7 +302,10 @@ class PetriNet:
                     inv = not inv
                     inv_str = ", arrowhead=inv"
                 cap = arc.capacity
-                cap_str = f"label={cap:.3f}"
+                if isinstance(cap, int):
+                    cap_str = f"label={cap}"
+                elif isinstance(cap, float):
+                    cap_str = f"label={cap:.1f}"
                 if omit_unit_caps and cap == 1:
                     cap_str = ""
                 str0 += f"{ar0}->{ar1}[{cap_str}{inv_str}];\n"

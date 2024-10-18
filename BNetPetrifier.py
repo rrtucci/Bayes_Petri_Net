@@ -273,8 +273,11 @@ class BNetPetrifier:
             if omit_unit_caps and cap == 1:
                 cap_str = ""
             else:
-                cap_str = f", label={cap}"
-            inv_str = ", arrowhead=inv" if \
+                if isinstance(cap, int):
+                    cap_str = f",label={cap}"
+                elif isinstance(cap, float):
+                    cap_str = f",label={cap:.1f}"
+            inv_str = ",arrowhead=inv" if \
                 petri_arrow in self.inv_petri_arrows else ""
             return cap_str, inv_str
 
@@ -296,14 +299,14 @@ class BNetPetrifier:
                 num_grays = max_content
             for buffer_nd in self.buffer_nds:
                 str0 += f"{buffer_nd}["
-                str0 += f"shape={place_shape}, style=filled, fontcolor=red,"
+                str0 += f"shape={place_shape},style=filled,fontcolor=red,"
                 content = self.buffer_nd_to_content[buffer_nd]
                 tone = get_gray_tone(round(content), num_grays)
-                str0 += f'fillcolor="{tone}", label={content:.1f}];\n'
+                str0 += f'fillcolor="{tone}",label={content:.1f}];\n'
             for name in self.bnet_nds:
                 if self.cond_bnet_nds and name in self.cond_bnet_nds:
                     color_str = \
-                        "[shape=circle, style=filled, color=yellow];\n"
+                        "[shape=circle,style=filled,color=yellow];\n"
                 else:
                     color_str = "[shape=none];\n"
                 str0 += name + color_str
