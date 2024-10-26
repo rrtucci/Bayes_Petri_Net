@@ -96,7 +96,8 @@ class BNetPetrifier:
                     self.bnet_nds.append(ch)
         for nd in self.bnet_nds:
             if "_" in nd:
-                assert False, f"bnet node name '{nd}' has an underscore"
+                assert False, f"bnet node name '{nd}' contains a forbidden" \
+                              " character, an underscore."
         if verbose:
             print("bnet_nds=", self.bnet_nds)
             print("cond_bnet_nds=", self.cond_bnet_nds)
