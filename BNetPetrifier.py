@@ -20,6 +20,10 @@ class BNetPetrifier:
     The arrows of the bnet (`bnet_arrows`) are represented by solid lines
     and those of the Petri Net (`petri_arrows`) by dotted lines.
 
+    IMPORTANT: Do not use an underscore in the name of any bnet node when
+    using this class. If you do, the reading and writing of DOT files will
+    malfunction.
+
     Attributes
     ----------
     bnet_arrows: list[tuple[str, str]]
@@ -90,6 +94,9 @@ class BNetPetrifier:
             for ch in children:
                 if ch not in self.bnet_nds:
                     self.bnet_nds.append(ch)
+        for nd in self.bnet_nds:
+            if "_" in nd:
+                assert False, f"bnet node name '{nd}' has an underscore"
         if verbose:
             print("bnet_nds=", self.bnet_nds)
             print("cond_bnet_nds=", self.cond_bnet_nds)
