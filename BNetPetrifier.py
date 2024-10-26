@@ -15,7 +15,7 @@ class BNetPetrifier:
     the second string of the pair.
 
     We will use the term "buffer" to signify the name of a Place. We will
-    use the term "arrow" to signify just name_pair of an Arc.
+    use the term "petri arrow" to signify just the name_pair of an Arc.
 
     The arrows of the bnet (`bnet_arrows`) are represented by solid lines
     and those of the Petri Net (`petri_arrows`) by dotted lines.
@@ -37,15 +37,16 @@ class BNetPetrifier:
         list of buffer nodes
     cond_bnet_nds: list[str]
         list of bnet nodes that are conditioned on. Conditioned nodes play a
-        crucial role in Pearl's d-separation rules from which the transition
-        firing rules will be defined. Conditioned nodes are indicated in
-        this software by a solid yellow circle containing the name of a bnet
-        node.
+        crucial role in Pearl's d-separation rules from which the firing
+        rules will be defined. Conditioned nodes are indicated in this
+        software by a solid yellow circle containing the name of a bnet node.
     inv_petri_arrows: list[tuple[str, str]]
         list of Petri arrows that will be drawn in the inv style (with
         reversed arrowheads). The inv arrows are determined internally,
         not by the user. They are the arrows that travel opposite (upstream)
         to their corresponding bnet arrow.
+    pa_to_descendants: dict[str, list[str]]
+        a dictionary mapping every bnet node to a list of its descendants
     petri_arrow_to_capacity: dict[tuple[str, str], int]
         dictionary mapping every Petri arrow to its capacity
     petri_arrows: list[tuple[str, str]]
@@ -187,7 +188,7 @@ class BNetPetrifier:
 
     def nd2_is_collider(self, nd1, nd2, nd3):
         """
-        This method returns True iff node nd2 ia a collider between node nd1
+        This method returns True iff node nd2 is a collider between node nd1
         and node nd3.
 
         Parameters
@@ -209,10 +210,10 @@ class BNetPetrifier:
 
     def nd2_is_blocked(self, nd1, nd2, nd3):
         """
-        This method assumes a  bnet with nodes nd1, nd2, nd3. It returns
-        True iff node nd2 is blocked between node nd1 and node nd3. The
-        definition of when a node is blocked is determined by Pearl's rules
-        of d-separation.
+        This method assumes a bnet with nodes nd1, nd2, nd3. It returns True
+        iff node nd2 is blocked between node nd1 and node nd3. The
+        definition of when a node is blocked is given by Pearl's rules of
+        d-separation.
 
 
         Parameters

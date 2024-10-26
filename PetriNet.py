@@ -24,6 +24,7 @@ class PetriNet:
                  arcs,
                  tras):
         """
+        Constructor
 
         Parameters
         ----------
@@ -94,7 +95,7 @@ class PetriNet:
     def get_arcs_from_name_pairs(self, name_pairs):
         """
         This method returns the list of Arc objects associated with a list of
-        name pairs `name_pair`.
+        name pairs `name_pairs`.
 
         Parameters
         ----------
@@ -158,7 +159,7 @@ class PetriNet:
         Parameters
         ----------
         tra: Transition
-        in_arc: Arc
+        in_arc: Arc|None
 
         Returns
         -------
@@ -249,7 +250,7 @@ class PetriNet:
         firing_tras: list[Transition]
             list of transitions to be fired.
         inv_arcs: list[Arc]
-            list of arcs to be inverted (i.e., drawn with reversed arrowheads)
+            list of arcs to be inverted (i.e., drawn with inv arrowheads)
 
         Returns
         -------
@@ -283,7 +284,8 @@ class PetriNet:
         inv_arcs: list[Arc]
             arcs to be drawn with arrowhead=inv
         omit_unit_caps: bool
-            this to True iff arrow capacities equal to 1 are not drawn
+            set this to True iff instructs it not to draw arrow capacities
+            equal to 1.
         place_shape: str
             This is usually set to "circle". Set this equal to the name of
             the shape of a node.

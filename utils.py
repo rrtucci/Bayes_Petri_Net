@@ -145,7 +145,7 @@ def complete_dict(dictio, new_keys, default_val):
 
     Parameters
     ----------
-    dictio: dict[str, list[int]]
+    dictio: dict[str, int]
     new_keys: list[str]
     default_val: int
 
@@ -194,15 +194,14 @@ if __name__ == "__main__":
 
 
     def main2():
-        # Example usage
-        parent_to_children = {
+        pa_to_children = {
             'A': ['B', 'C'],
             'B': ['C', 'D'],
             'C': ['D']
         }
 
-        parent_to_descendants = get_pa_to_descendants(parent_to_children)
-        print(parent_to_descendants)
+        pa_to_descendants = get_pa_to_descendants(pa_to_children)
+        print(pa_to_descendants)
 
 
     main1()

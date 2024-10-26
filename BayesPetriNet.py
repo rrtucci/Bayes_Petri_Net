@@ -6,11 +6,11 @@ class BayesPetriNet(PetriNet):
     """
     This class defines a Bayes Petri Net.
 
-    Note that even though this is a subclass of PetriNet, the parameters of 
-    its __init__ constructor are not the same as those of the __init__ of 
-    PetriNet. Instead, they are the same as those of the __init__ of 
-    BNetPetrifier. The __init__ of this class uses its input parameters to 
-    immediately create self.petrifier.
+    Note that even though this is a subclass of PetriNet, the parameters of
+    its __init__ are not the same as those of the __init__ of PetriNet.
+    Instead, they are the same as those of the __init__ of BNetPetrifier.
+    The __init__ of this class uses its input parameters to immediately
+    create self.petrifier.
 
 
     Attributes
@@ -36,9 +36,8 @@ class BayesPetriNet(PetriNet):
         petri_arrow_to_capacity: dict[tuple[str,str], int]
         verbose: bool
         """
-        # petri_arrow_to_capacity = None
-        # this will cause all capacities to be set to 1
-        # by BNetPetrifier
+        # if petri_arrow_to_capacity = None,
+        # all arrow capacities in BNetPetrifier will be set to 1
 
         self.petrifier = BNetPetrifier(
             bnet_pa_to_children,
