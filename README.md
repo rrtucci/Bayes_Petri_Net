@@ -31,7 +31,7 @@ BPN are closely related to
 by Pearl in his book *Probabilistic Reasoning in Intelligent Systems: 
 Networks of Plausible Inference (1988)*
 
-## Excerpt from my book Bayesuvius
+## Excerpt from my book Bayesuvius (from the chapter entitled "Petri Nets")
 
 A **Petri net** (pnet) is basically a diagram of an idealized machine that features actions (called transitions) and buffers (called places) that contain resources (called tokens). This diagram evolves in time like a motion picture.  In that motion picture, transitions are fired at various times, sometimes concurrently (i.e., in parallel) and the effect of that is shown  by the motion of the tokens. The evolution of many  machines can be abstracted to a pnet. 
 
